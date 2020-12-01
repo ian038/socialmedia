@@ -33,4 +33,5 @@ build/
 .vscode/
 
 client/node_modules
+spring-mongodb/src/main/resources/application.properties.java
 
