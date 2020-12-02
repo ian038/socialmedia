@@ -3,15 +3,7 @@ package com.socialmedia.springmongodb.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class RegisterRequest {
-
+public class SignupRequest {
     @NotNull(message = "Username cannot be empty")
     private String username;
 
@@ -30,7 +22,7 @@ public class RegisterRequest {
 
     public String getEmail() {
         return email;
-      }
+    }
 
     public String getPassword() {
         return password;
