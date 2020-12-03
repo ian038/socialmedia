@@ -1,9 +1,11 @@
 package com.socialmedia.springmongodb.service;
 
+import java.time.Instant;
 import java.util.Date;
 
 import com.socialmedia.springmongodb.Auth.JwtProvider;
 import com.socialmedia.springmongodb.dto.AuthResponse;
+import com.socialmedia.springmongodb.dto.RefreshTokenRequest;
 import com.socialmedia.springmongodb.dto.SigninRequest;
 import com.socialmedia.springmongodb.dto.SignupRequest;
 import com.socialmedia.springmongodb.model.User;
@@ -22,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
 @Transactional
 public class AuthService {
     @Autowired
@@ -36,6 +37,9 @@ public class AuthService {
 
     @Autowired
     private JwtProvider jwtProvider;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
     
     public void signup(SignupRequest signupRequest) {
         User user = new User();
@@ -50,10 +54,25 @@ public class AuthService {
     }
 
     public AuthResponse signin(SigninRequest signinRequest) {
-        Authentication authenticate = authenticationManager
-        .authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String token = jwtProvider.geenrateToken(authenticate);
-        return new AuthResponse(token, signinRequest.getUsername());
+        String token = jwtProvider.generateToken(authenticate);
+        return AuthResponse.builder()
+                           .authenticationToken(token)
+                           .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                           .expiration(Instant.now().plusMillis(jwtProvider.getJwtExpiration()))
+                           .username(signinRequest.getUsername())
+                           .build();
+    }
+
+    public AuthResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+        String token = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
+        return AuthResponse.builder()
+                           .authenticationToken(token)
+                           .refreshToken(refreshTokenRequest.getRefreshToken())
+                           .expiration(Instant.now().plusMillis(jwtProvider.getJwtExpiration()))
+                           .username(refreshTokenRequest.getUsername())
+                           .build();
     }
 }
