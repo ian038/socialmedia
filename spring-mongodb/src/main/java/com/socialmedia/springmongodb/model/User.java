@@ -1,10 +1,12 @@
 package com.socialmedia.springmongodb.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.*;
 import java.util.Date;
+import java.util.Set;
 
 @Document(collection = "users")
 public class User {
@@ -20,23 +22,22 @@ public class User {
     @NotEmpty(message = "Password cannot be empty")
     private String hashed_password;
 
-    @NotNull
     private String salt;
 
-    @NotNull
     private Date created;
 
-    @NotNull
     private Date updated;
+    
+    @DBRef
+    private Set<Role> roles;
 
     public User() {
     }
 
-    public User(String username, String email, String hashed_password, String salt, Date created) {
+    public User(String username, String email, String hashed_password, Date created) {
       this.username = username;
       this.email = email;
       this.hashed_password = hashed_password;
-      this.salt = salt;
       this.created = created;
     }
 
@@ -91,4 +92,12 @@ public class User {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+    public Set<Role> getRoles() {
+      return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+      this.roles = roles;
+  }
 }

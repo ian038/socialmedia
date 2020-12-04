@@ -5,8 +5,8 @@ import java.time.Instant;
 import lombok.Builder;
 import lombok.Data;
 
-@Builder
 @Data
+@Builder
 public class AuthResponse {
     private String authenticationToken;
     private String username;
