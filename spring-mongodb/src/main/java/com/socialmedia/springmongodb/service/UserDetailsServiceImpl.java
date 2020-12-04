@@ -1,7 +1,6 @@
 package com.socialmedia.springmongodb.service;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 
 import static java.util.Collections.singletonList;

@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-@Document(collection = "refreshtoken")
+@Document(collection = "refreshtokens")
 public class RefreshToken {
     @Id
     private String id;

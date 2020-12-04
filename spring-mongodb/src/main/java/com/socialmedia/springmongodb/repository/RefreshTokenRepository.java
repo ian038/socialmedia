@@ -5,7 +5,7 @@ import com.socialmedia.springmongodb.model.RefreshToken;
 
 import java.util.Optional;
 
-public interface RefreshTokenRepository extends MongoRepository<RefreshToken, Long>{
+public interface RefreshTokenRepository extends MongoRepository<RefreshToken, String>{
     Optional<RefreshToken> findByToken(String token);
 
     void deleteByToken(String token);
