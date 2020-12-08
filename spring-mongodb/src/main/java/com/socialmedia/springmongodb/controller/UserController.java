@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.socialmedia.springmongodb.model.User;
 import com.socialmedia.springmongodb.service.UserService;
 
 @CrossOrigin(origins = "http://localhost:5000")
@@ -24,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserbyId(@PathVariable("id") String id) {
+    public ResponseEntity<Object> getUserbyId(@PathVariable("id") String id) {
         return userService.getUserbyId(id);
     }
 }
