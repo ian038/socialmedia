@@ -17,7 +17,7 @@ import javax.validation.*;
 import com.socialmedia.springmongodb.model.Post;
 import com.socialmedia.springmongodb.service.PostService;
 
-@CrossOrigin(origins = "http://localhost:5000")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/post")
 public class PostController {

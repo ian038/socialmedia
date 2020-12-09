@@ -17,7 +17,7 @@ import com.socialmedia.springmongodb.dto.SignupRequest;
 import com.socialmedia.springmongodb.service.AuthService;
 import com.socialmedia.springmongodb.service.RefreshTokenService;
 
-@CrossOrigin(origins = "http://localhost:5000")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

@@ -12,6 +12,7 @@ import com.socialmedia.springmongodb.dto.AuthResponse;
 import com.socialmedia.springmongodb.dto.RefreshTokenRequest;
 import com.socialmedia.springmongodb.dto.SigninRequest;
 import com.socialmedia.springmongodb.dto.SignupRequest;
+import com.socialmedia.springmongodb.exception.SpringSocialMediaException;
 import com.socialmedia.springmongodb.model.User;
 import com.socialmedia.springmongodb.repository.UserRepository;
 

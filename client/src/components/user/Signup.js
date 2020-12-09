@@ -3,6 +3,7 @@ import { Avatar, Button, TextField, Link,  Grid, Typography, Container } from '@
 import { Alert } from '@material-ui/lab'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { makeStyles } from '@material-ui/core/styles'
+import { signup } from '../../auth'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -45,8 +46,25 @@ export default function Signup() {
         e.preventDefault()
         setValues({ ...values, error: false })
         const user = { username, email, password }
-        console.log(user)
+        signup(user).then(res => {
+            setValues({ ...values, username: '', email: '', password: '', error: '', success: true })
+        }).catch(error => {
+            console.log(error.response)
+            setValues({ ...values, error: error.response.data.details, success: false })
+        })
     }
+
+    const showError = () => (
+        <Alert severity="error" style={{ display: error ? '' : 'none' }}>
+            {error}
+        </Alert>
+    )
+
+    const showLoading = () => (
+        <Alert severity="success" style={{ display: success ? '' : 'none' }}>
+            Success! User created. Please <Link href="/signin" variant="body2" >Sign In</Link>
+        </Alert>
+      )
 
     const signUpForm = () => (
         <form className={classes.form} noValidate>
@@ -105,8 +123,8 @@ export default function Signup() {
     return (
         <Container maxWidth="xs">
         <div className={classes.paper}>
-            {/* {showError()}
-            {showLoading()} */}
+            {showError()}
+            {showLoading()}
             <Avatar className={classes.avatar}>
                 <LockOutlinedIcon />
             </Avatar>

@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import com.socialmedia.springmongodb.dto.UserUpdateRequest;
 import com.socialmedia.springmongodb.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:5000")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
