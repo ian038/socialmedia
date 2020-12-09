@@ -22,16 +22,22 @@ public class Post {
 
     private Binary photo;
 
-    private HashMap<String, String> user = new HashMap<String, String>(); 
+    private HashMap<String, String> postedBy = new HashMap<String, String>(); 
 
     @CreatedDate
     private Date created;
+
+    private Date updated;
   
     public Post() {
     }
   
     public String getId() {
       return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
     }
   
     public String getTitle() {
@@ -58,12 +64,12 @@ public class Post {
       this.photo = photo;
     }
 
-    public HashMap<String, String> getUser() {
-      return user;
+    public HashMap<String, String> getPostedBy() {
+      return postedBy;
   }
 
-  public void setUser(HashMap<String, String> user) {
-      this.user = user;
+  public void setPostedBy(HashMap<String, String> postedBy) {
+      this.postedBy = postedBy;
   }
 
     public Date getCreated() {
@@ -72,5 +78,13 @@ public class Post {
   
     public void setCreated(Date created) {
       this.created = created;
+    }
+
+    public Date getUpdated() {
+      return updated;
+    }
+  
+    public void setUpdated(Date updated) {
+      this.updated = updated;
     }
 }
