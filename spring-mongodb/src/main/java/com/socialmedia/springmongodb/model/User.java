@@ -3,12 +3,10 @@ package com.socialmedia.springmongodb.model;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.*;
 import java.util.Date;
-import java.util.Set;
 
 @Document(collection = "users")
 public class User {
@@ -31,9 +29,6 @@ public class User {
 
     @LastModifiedDate
     private Date updated;
-    
-    @DBRef
-    private Set<Role> roles;
 
     public User() {
     }
@@ -100,19 +95,11 @@ public class User {
         this.updated = updated;
     }
 
-    public Set<Role> getRoles() {
-      return roles;
-  }
+    public void removeSalt(String salt) {
+      this.salt = "";
+    }
 
-  public void setRoles(Set<Role> roles) {
-      this.roles = roles;
-  }
-
-  public void removeSalt(String salt) {
-    this.salt = "";
-  }
-
-  public void removePassword(String hashed_password) {
-    this.hashed_password = "";
-  }
+    public void removePassword(String hashed_password) {
+      this.hashed_password = "";
+    }
 }

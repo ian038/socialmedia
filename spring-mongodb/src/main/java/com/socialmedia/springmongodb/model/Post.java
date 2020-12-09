@@ -1,8 +1,13 @@
 package com.socialmedia.springmongodb.model;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.*;
+import javax.websocket.Decoder.Binary;
+
+import java.util.Date;
+import java.util.HashMap;
 
 @Document(collection = "posts")
 public class Post {
@@ -14,10 +19,15 @@ public class Post {
 
     @Size(min = 4, max = 2000, message = "Post body should have at least 4 characters and should not be more than 2000 characters long")
     private String body;
+
+    private Binary photo;
+
+    private HashMap<String, String> user = new HashMap<String, String>(); 
+
+    @CreatedDate
+    private Date created;
   
-    public Post(String title, String body) {
-      this.title = title;
-      this.body = body;
+    public Post() {
     }
   
     public String getId() {
@@ -38,5 +48,29 @@ public class Post {
   
     public void setBody(String body) {
       this.body = body;
+    }
+
+    public Binary getPhoto() {
+      return photo;
+    }
+
+    public void setPhoto(Binary photo) {
+      this.photo = photo;
+    }
+
+    public HashMap<String, String> getUser() {
+      return user;
+  }
+
+  public void setUser(HashMap<String, String> user) {
+      this.user = user;
+  }
+
+    public Date getCreated() {
+      return created;
+    }
+  
+    public void setCreated(Date created) {
+      this.created = created;
     }
 }
