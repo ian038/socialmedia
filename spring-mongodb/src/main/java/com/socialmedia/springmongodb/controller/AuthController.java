@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.*;
 
-import com.socialmedia.springmongodb.dto.AuthResponse;
 import com.socialmedia.springmongodb.dto.RefreshTokenRequest;
 import com.socialmedia.springmongodb.dto.SigninRequest;
 import com.socialmedia.springmongodb.dto.SignupRequest;
@@ -33,12 +32,12 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public AuthResponse signin(@Valid @RequestBody SigninRequest signinRequest) {
+    public ResponseEntity<Object> signin(@Valid @RequestBody SigninRequest signinRequest) {
         return authService.signin(signinRequest);
     }
 
     @PostMapping("/refresh/token") 
-    public AuthResponse refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+    public ResponseEntity<Object> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         return authService.refreshToken(refreshTokenRequest);
     }
 

@@ -2,7 +2,6 @@ package com.socialmedia.springmongodb.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.HashMap;
 
 import com.socialmedia.springmongodb.repository.PostRepository;
