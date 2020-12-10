@@ -4,17 +4,17 @@ import java.time.Instant;
 
 public class AuthResponse {
     private String authenticationToken;
+    private String userId;
     private String username;
-    private String refreshToken;
+    private String userEmail;
     private Instant expiration;
 
     public AuthResponse() {
     }
 
-    public AuthResponse(String authenticationToken, String username, String refreshToken, Instant expiration) {
+    public AuthResponse(String authenticationToken, String username, Instant expiration) {
         this.authenticationToken = authenticationToken;
         this.username = username;
-        this.refreshToken = refreshToken;
         this.expiration = expiration;
     }
 
@@ -22,12 +22,16 @@ public class AuthResponse {
         return authenticationToken;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     public String getUsername() {
         return username;
     }
 
-    public String getRefreshToken() {
-        return refreshToken;
+    public String getUserEmail() {
+        return userEmail;
     }
 
     public Instant getExpiration() {
@@ -38,12 +42,16 @@ public class AuthResponse {
         this.authenticationToken = authenticationToken;
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public void setExpiration(Instant expiration) {

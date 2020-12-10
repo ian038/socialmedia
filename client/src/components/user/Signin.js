@@ -59,8 +59,7 @@ export default function SignIn() {
             setValues({ ...values, redirectToReferer: true })
            })
       }).catch(error => {
-          console.log(error.response)
-          setValues({ ...values, error: error.response.data.message, loading: false })
+        setValues({ ...values, error: error.response.data.details, loading: false })
       })
   }
 

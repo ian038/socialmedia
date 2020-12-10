@@ -25,10 +25,25 @@ export const signin = user => {
         })
 }
 
+export const signout = next => {
+    if(typeof window !== 'undefined') {
+        localStorage.removeItem('jwt')
+        next()
+        return axios.get(`${SERVER}/api/auth/signout`)
+        .then(res => {
+           return res.data
+        })
+        .catch(error => console.log(error))
+    }
+}
+
+
 export const authenticate = (res, next) => {
     if(typeof window !== 'undefined') {
         localStorage.setItem('jwt', JSON.stringify(res.data.authenticationToken))
-        localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken))
+        localStorage.setItem('userid', JSON.stringify(res.data.userId))
+        localStorage.setItem('username', JSON.stringify(res.data.username))
+        localStorage.setItem('useremail', JSON.stringify(res.data.userEmail))
         next()
     }
 }
@@ -38,7 +53,11 @@ export const isAuthenticated = () => {
         return false
     }
     if(localStorage.getItem('jwt')) {
-        return JSON.parse(localStorage.getItem('jwt'))
+        const user = {}
+        user['id'] = JSON.parse(localStorage.getItem('userid'))
+        user['username'] = JSON.parse(localStorage.getItem('username'))
+        user['email'] = JSON.parse(localStorage.getItem('useremail'))
+        return JSON.parse(localStorage.getItem('jwt')) && user
     } else {
         return false
     }

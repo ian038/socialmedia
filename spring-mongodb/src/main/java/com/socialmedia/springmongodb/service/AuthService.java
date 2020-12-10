@@ -3,9 +3,13 @@ package com.socialmedia.springmongodb.service;
 import java.time.Instant;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.socialmedia.springmongodb.Auth.JwtProvider;
 import com.socialmedia.springmongodb.dto.AuthResponse;
-import com.socialmedia.springmongodb.dto.RefreshTokenRequest;
+import com.socialmedia.springmongodb.dto.ErrorResponse;
+import com.socialmedia.springmongodb.dto.SignUpSuccessResponse;
 import com.socialmedia.springmongodb.dto.SigninRequest;
 import com.socialmedia.springmongodb.dto.SignupRequest;
 import com.socialmedia.springmongodb.exception.SpringSocialMediaException;
@@ -21,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,13 +46,12 @@ public class AuthService {
 
     @Autowired
     private JwtProvider jwtProvider;
-
-    @Autowired
-    private RefreshTokenService refreshTokenService;
     
-    public ResponseEntity<String> signup(SignupRequest signupRequest) {
+    public ResponseEntity<Object> signup(SignupRequest signupRequest) {
 		if (userRepository.existsByEmail(signupRequest.getEmail())) {
-			return new ResponseEntity<>("Error: Email is already in use!", HttpStatus.BAD_REQUEST);
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setDetails("Email is already in use!");
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 		}
         User user = new User();
         // String role = signupRequest.getRole();        
@@ -56,9 +60,11 @@ public class AuthService {
         user.setPassword(bCryptPasswordEncoder.encode(signupRequest.getPassword()));
         user.setSalt(BCrypt.gensalt(10));
         user.setCreated(new Date());
-
         userRepository.save(user);
-        return new ResponseEntity<>("Sign up successful", HttpStatus.OK);
+
+        SignUpSuccessResponse signUpSuccessResponse = new SignUpSuccessResponse();
+        signUpSuccessResponse.setSuccess("Sign up successful");
+        return new ResponseEntity<>(signUpSuccessResponse, HttpStatus.OK);
     }
 
     public ResponseEntity<Object> signin(SigninRequest signinRequest) {
@@ -66,27 +72,27 @@ public class AuthService {
         BCryptPasswordEncoder b = new BCryptPasswordEncoder();
         Boolean result = b.matches(signinRequest.getPassword(), user.getPassword());
         if(result == false) {
-            return new ResponseEntity<>("Error: Password is incorrect!", HttpStatus.FORBIDDEN);
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setDetails("Password is incorrect!");
+            return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
         } 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
         AuthResponse authResponse = new AuthResponse();
         authResponse.setAuthenticationToken(token);
+        authResponse.setUserId(user.getId());
         authResponse.setUsername(signinRequest.getUsername());
-        authResponse.setRefreshToken(refreshTokenService.generateRefreshToken().getToken());
+        authResponse.setUserEmail(user.getEmail());
         authResponse.setExpiration(Instant.now().plusMillis(jwtProvider.getJwtExpiration()));
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<Object> refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
-        String token = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setAuthenticationToken(token);
-        authResponse.setUsername(refreshTokenRequest.getUsername());
-        authResponse.setRefreshToken(refreshTokenRequest.getRefreshToken());
-        authResponse.setExpiration(Instant.now().plusMillis(jwtProvider.getJwtExpiration()));
-        return new ResponseEntity<>(authResponse, HttpStatus.OK);
+    public ResponseEntity<String> signOut(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return new ResponseEntity<>("Signout success!", HttpStatus.OK);
     }
 }
