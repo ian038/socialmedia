@@ -57,18 +57,12 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1
   },
-  links : {
-    marginRight: 30,
-    textDecoration: 'none',
-    color: 'white'
-  },
   button: {
     margin: theme.spacing(1, 1.5)
   }
 }))
 
 function Menu({ history }) {
-    console.log(isAuthenticated())
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -92,7 +86,7 @@ function Menu({ history }) {
         })}
       >
         <Toolbar>
-          {isAuthenticated() ? 
+          {/* {isAuthenticated() ? 
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -103,17 +97,15 @@ function Menu({ history }) {
             <MenuIcon />
           </IconButton>
           : ''
-          }
+          } */}
           <Typography variant="h6" className={classes.title}>
               <Link style={{ textDecoration: 'none', color: 'white' }} to="/">Social Media App</Link>
           </Typography>
             {isAuthenticated() ? 
             <Fragment>
-                <Typography>
-                    <Link className={classes.links}>{isAuthenticated().username}</Link>
-                </Typography>
-                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-                    <Tab label="Home" to="/" component={Link} />
+                <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="nav tabs example">
+                  <Tab label="Home" to="/" component={Link} />
+                  <Tab label={`${isAuthenticated().username}'s profile`} to={`/user/${isAuthenticated().id}`} component={Link} />
                 </Tabs>
                 <Button variant="contained" color="secondary" className={classes.button} onClick={() => signout(() => { history.push('/') })}>
                     Sign Out
@@ -131,7 +123,7 @@ function Menu({ history }) {
             }
         </Toolbar>
       </AppBar>
-      {isAuthenticated() ? 
+      {/* {isAuthenticated() ? 
       <Drawer
         variant="persistent"
         anchor="left"
@@ -164,7 +156,7 @@ function Menu({ history }) {
         </List>
       </Drawer>
       : ''
-      }
+      } */}
     </div>
   );
 }

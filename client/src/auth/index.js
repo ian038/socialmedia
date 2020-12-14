@@ -1,10 +1,10 @@
-import { SERVER } from '../config'
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 
 export const signup = user => {
     return axios({
         method: 'post',
-        url: `${SERVER}/api/auth/signup`,
+        url: `${process.env.REACT_APP_SERVER}/api/auth/signup`,
         headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
@@ -16,7 +16,7 @@ export const signup = user => {
 export const signin = user => {
     return axios({
             method: 'post',
-            url:`${SERVER}/api/auth/signin`,
+            url:`${process.env.REACT_APP_SERVER}/api/auth/signin`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json"
@@ -29,7 +29,7 @@ export const signout = next => {
     if(typeof window !== 'undefined') {
         localStorage.removeItem('jwt')
         next()
-        return axios.get(`${SERVER}/api/auth/signout`)
+        return axios.get(`${process.env.REACT_APP_SERVER}/api/auth/signout`)
         .then(res => {
            return res.data
         })
@@ -53,11 +53,17 @@ export const isAuthenticated = () => {
         return false
     }
     if(localStorage.getItem('jwt')) {
+        const decoded = jwt_decode(localStorage.getItem('jwt'))
+        const expirationTime = (decoded.exp * 1000) - 60000
+        if(Date.now() >= expirationTime) {
+            localStorage.clear()
+        }
         const user = {}
         user['id'] = JSON.parse(localStorage.getItem('userid'))
         user['username'] = JSON.parse(localStorage.getItem('username'))
         user['email'] = JSON.parse(localStorage.getItem('useremail'))
-        return JSON.parse(localStorage.getItem('jwt')) && user
+        user['token'] = JSON.parse(localStorage.getItem('jwt'))
+        return user
     } else {
         return false
     }
