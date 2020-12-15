@@ -106,6 +106,7 @@ function Menu({ history }) {
                 <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="nav tabs example">
                   <Tab label="Home" to="/" component={Link} />
                   <Tab label={`${isAuthenticated().username}'s profile`} to={`/user/${isAuthenticated().id}`} component={Link} />
+                  <Tab label="Users" to="/users" component={Link} />
                 </Tabs>
                 <Button variant="contained" color="secondary" className={classes.button} onClick={() => signout(() => { history.push('/') })}>
                     Sign Out

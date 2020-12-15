@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Redirect } from 'react-router-dom'
-import { Typography } from '@material-ui/core'
+import { Button, Grid, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
@@ -9,6 +9,9 @@ import { isAuthenticated } from '../../auth'
 const useStyles = makeStyles((theme) => ({
     root: {
       marginTop: theme.spacing(10),
+    },
+    grid: {
+        justifyContent: 'center'
     }
   }));
 
@@ -50,12 +53,28 @@ export default function Profile() {
     return (
         <div className={classes.root}>
             {redirectUser(redirectToSignin)}
-            <Typography component="h1" variant="h5">
-                Profile
-            </Typography>
-            <p>Hello {isAuthenticated().username}</p>
-            <p>Email: {isAuthenticated().email}</p>
-            <p>Joined {new Date(user.createdDate).toDateString()}</p>
+            <Grid container spacing={6} className={classes.grid}>
+                <Grid item xs={5}>
+                    <Typography component="h1" variant="h5">
+                        Profile
+                    </Typography>
+                    <p>Hello {isAuthenticated().username}</p>
+                    <p>Email: {isAuthenticated().email}</p>
+                    <p>Joined {new Date(user.createdDate).toDateString()}</p>
+                </Grid>
+                <Grid item xs={5}>
+                    {isAuthenticated().id === userId && (
+                        <div>
+                            <Button variant="contained" color="primary" href={`/api/user/update/${userId}`}>
+                                Edit
+                            </Button>
+                            <Button variant="contained" color="secondary" style={{ marginLeft: '5%' }} href={`/api/user/delete/${userId}`}>
+                                Delete
+                            </Button>
+                        </div>
+                    )}
+                </Grid>
+            </Grid>
         </div>  
     )
 }
