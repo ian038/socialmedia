@@ -8,7 +8,7 @@ import { isAuthenticated } from '../../auth'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      marginTop: theme.spacing(10),
+      marginTop: theme.spacing(13),
     },
     grid: {
         justifyContent: 'center'
@@ -54,22 +54,33 @@ export default function Profile() {
         <div className={classes.root}>
             {redirectUser(redirectToSignin)}
             <Grid container spacing={6} className={classes.grid}>
-                <Grid item xs={5}>
+                <Grid item xs={3}>
                     <Typography component="h1" variant="h5">
                         Profile
                     </Typography>
-                    <p>Hello {isAuthenticated().username}</p>
-                    <p>Email: {isAuthenticated().email}</p>
-                    <p>Joined {new Date(user.createdDate).toDateString()}</p>
+                    <img
+                    src="https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png"
+                    alt={user.username}
+                    height="75%"
+                    />
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={4}>
                     {isAuthenticated().id === userId && (
-                        <div>
+                        <div style={{ marginTop: '10%' }}>
+                            <Typography variant="subtitle1" component="p">
+                                Hello {user.username}
+                            </Typography>
+                            <Typography variant="subtitle1" component="p">
+                                Email: {user.email}
+                            </Typography>
+                            <Typography variant="subtitle1" component="p">
+                                Joined {new Date(user.createdDate).toDateString()}
+                            </Typography>
                             <Button variant="contained" color="primary" href={`/api/user/update/${userId}`}>
-                                Edit
+                                Edit Profile
                             </Button>
                             <Button variant="contained" color="secondary" style={{ marginLeft: '5%' }} href={`/api/user/delete/${userId}`}>
-                                Delete
+                                Delete Profile
                             </Button>
                         </div>
                     )}

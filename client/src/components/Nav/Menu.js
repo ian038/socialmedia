@@ -18,7 +18,8 @@ import {
   ListItemIcon,
   ListItem,
   makeStyles, 
-  useTheme
+  useTheme,
+  withTheme
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -72,6 +73,11 @@ function Menu({ history }) {
     setValue(newValue);
   };
 
+  const isActive = (history, path) => {
+    if(history.location.pathname === path) return { color: '#00FFFF' } 
+    else return { color: 'white' }
+  }
+
   const handleDrawer = () => {
     open ? setOpen(false) : setOpen(true)
   }
@@ -104,9 +110,9 @@ function Menu({ history }) {
             {isAuthenticated() ? 
             <Fragment>
                 <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="nav tabs example">
-                  <Tab label="Home" to="/" component={Link} />
-                  <Tab label={`${isAuthenticated().username}'s profile`} to={`/user/${isAuthenticated().id}`} component={Link} />
-                  <Tab label="Users" to="/users" component={Link} />
+                  <Tab label="Home" to="/" component={Link} style={isActive(history, '/')} />
+                  <Tab label={`${isAuthenticated().username}'s profile`} to={`/user/${isAuthenticated().id}`} component={Link} style={isActive(history, `/user/${isAuthenticated().id}`)}  />
+                  <Tab label="Users" to="/users" component={Link} style={isActive(history, '/users')}  />
                 </Tabs>
                 <Button variant="contained" color="secondary" className={classes.button} onClick={() => signout(() => { history.push('/') })}>
                     Sign Out
