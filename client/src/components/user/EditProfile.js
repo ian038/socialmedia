@@ -1,20 +1,17 @@
-import { useState } from 'react'
-import { Avatar, Button, TextField, Link,  Grid, Typography, Container } from '@material-ui/core'
+import { useEffect, useState } from 'react'
+import { useParams, Redirect } from 'react-router-dom'
+import { Button, TextField, Typography, Container } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { makeStyles } from '@material-ui/core/styles'
-import { signup } from '../../auth'
+import { isAuthenticated } from '../../auth'
+import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-      marginTop: theme.spacing(8),
+      marginTop: theme.spacing(12),
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-    },
-    avatar: {
-      margin: theme.spacing(1),
-      backgroundColor: theme.palette.secondary.main,
     },
     form: {
       width: '100%', // Fix IE 11 issue.
@@ -24,33 +21,75 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(3, 0, 2),
     },
   }));
-  
-export default function Signup() {
-    const classes = useStyles();
+
+export default function EditProfile() {
+    const classes = useStyles()
     const [values, setValues] = useState({
+        id: '',
         username: '',
         email: '',
         password: '',
         error: '',
         success: false
     })
-    const { username, email, password, error, success } = values
+    const [redirectToProfile, setRedirectToProfile] = useState(false)
+    const { id, username, email, password, error } = values
+    const { userId } = useParams()
+
+    const fetchUser = () => {
+        axios({
+            method: 'get',
+            url: `${process.env.REACT_APP_SERVER}/api/user/${userId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            setValues({
+                id: res.data.id,
+                username: res.data.username,
+                email: res.data.email,
+             })
+        }).catch(error => {
+            // user not authenticated, redirect
+            if(error) {
+                setRedirectToProfile(true)
+            }
+        })
+    }
+
+    const updateUser = user => {
+        return axios({
+            method: 'put',
+            url: `${process.env.REACT_APP_SERVER}/api/user/update/${userId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            },
+            data: JSON.stringify(user)
+        })
+    }
+
+    useEffect(() => {
+        fetchUser()
+    }, [])
 
     // higher order function to target name and event of form
     const handleChange = name => e => {
         // array syntax to target all input fields
-        setValues({ ...values, success: false, [name]: e.target.value })
+        setValues({ ...values, [name]: e.target.value })
     }
 
     const handleSubmit = e => {
         e.preventDefault()
         setValues({ ...values, error: false })
-        const user = { username, email, password }
-        signup(user).then(res => {
-            setValues({ ...values, username: '', email: '', password: '', error: '', success: true })
+        const user = { username, email, password: password || undefined }
+        updateUser(user).then(res => {
+            setRedirectToProfile(true)
         }).catch(error => {
-            console.log(error.response)
-            setValues({ ...values, error: error.response.data.details, success: false })
+            setValues({ ...values, error: error.response.data.details })
         })
     }
 
@@ -60,13 +99,7 @@ export default function Signup() {
         </Alert>
     )
 
-    const showLoading = () => (
-        <Alert severity="success" style={{ display: success ? '' : 'none' }}>
-            Success! User created. Please <Link href="/signin" variant="body2" >Sign In</Link>
-        </Alert>
-    )
-
-    const signUpForm = () => (
+    const editProfileForm = () => (
         <form className={classes.form} noValidate>
             <TextField
             variant="outlined"
@@ -108,32 +141,20 @@ export default function Signup() {
             className={classes.submit}
             onClick={handleSubmit}
             >
-            Sign Up
+            Edit Profile
             </Button>
-            <Grid container>
-                <Grid item>
-                    <Link href="/signin" variant="body2">
-                    {"Already have an account? Sign In"}
-                    </Link>
-                </Grid>
-            </Grid>
         </form>
     )
-
     return (
         <Container maxWidth="xs">
+        {redirectToProfile ? <Redirect to={`/user/${id}`} /> : null}
         <div className={classes.paper}>
             {showError()}
-            {showLoading()}
-            <Avatar className={classes.avatar}>
-                <LockOutlinedIcon />
-            </Avatar>
             <Typography component="h1" variant="h5">
-                Sign Up
+                Edit Profile
             </Typography>
-            {signUpForm()}
+            {editProfileForm()}
         </div>
         </Container>
-    
     )
 }

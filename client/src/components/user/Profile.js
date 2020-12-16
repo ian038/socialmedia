@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, Redirect } from 'react-router-dom'
 import { Button, Grid, Typography } from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
-import { isAuthenticated } from '../../auth'
+import { signout, isAuthenticated } from '../../auth'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,6 +18,7 @@ export default function Profile() {
     const classes = useStyles();
     const [user, setUser] = useState("")
     const [redirectToSignin, setRedirectToSignin] = useState(false)
+    const [redirect, setRedirect] = useState(false)
     const { userId } = useParams()
 
     const fetchUser = () => {
@@ -44,15 +44,34 @@ export default function Profile() {
         fetchUser()
     }, [])
 
-    const redirectUser = redirectToSignin => {
-        if(redirectToSignin) {
-            return <Redirect to='/signin' /> && <Alert severity="error">User not authenticated. Please sign in.</Alert>
-        }
+    const deleteAccount = () => {
+        axios({
+            method: 'delete',
+            url: `${process.env.REACT_APP_SERVER}/api/user/delete/${userId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            signout(() => console.log("User deleted successfully!"))
+            setRedirect(true)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    const confirmDelete = () => {
+        let answer = window.confirm("Are you sure you want to delete your account?")
+        if(answer) {
+            deleteAccount()
+        } 
     }
 
     return (
         <div className={classes.root}>
-            {redirectUser(redirectToSignin)}
+            {redirectToSignin ? <Redirect to='/signin' /> : null}
+            {redirect ? <Redirect to='/' /> : null}
             <Grid container spacing={6} className={classes.grid}>
                 <Grid item xs={3}>
                     <Typography component="h1" variant="h5">
@@ -65,21 +84,23 @@ export default function Profile() {
                     />
                 </Grid>
                 <Grid item xs={4}>
+                    <div style={{ marginTop: '10%' }}>
+                        <Typography variant="subtitle1" component="p">
+                            Hello {user.username}
+                        </Typography>
+                        <Typography variant="subtitle1" component="p">
+                            Email: {user.email}
+                        </Typography>
+                        <Typography variant="subtitle1" component="p">
+                            Joined: {new Date(user.createdDate).toDateString()}
+                        </Typography>
+                    </div>
                     {isAuthenticated().id === userId && (
-                        <div style={{ marginTop: '10%' }}>
-                            <Typography variant="subtitle1" component="p">
-                                Hello {user.username}
-                            </Typography>
-                            <Typography variant="subtitle1" component="p">
-                                Email: {user.email}
-                            </Typography>
-                            <Typography variant="subtitle1" component="p">
-                                Joined {new Date(user.createdDate).toDateString()}
-                            </Typography>
-                            <Button variant="contained" color="primary" href={`/api/user/update/${userId}`}>
+                        <div style={{ marginTop: '5%' }}>
+                            <Button variant="contained" color="primary" href={`/user/edit/${userId}`}>
                                 Edit Profile
                             </Button>
-                            <Button variant="contained" color="secondary" style={{ marginLeft: '5%' }} href={`/api/user/delete/${userId}`}>
+                            <Button variant="contained" color="secondary" style={{ marginLeft: '5%' }} onClick={confirmDelete}>
                                 Delete Profile
                             </Button>
                         </div>
