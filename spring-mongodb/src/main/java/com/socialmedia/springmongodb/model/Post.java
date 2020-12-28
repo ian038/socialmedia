@@ -1,10 +1,9 @@
 package com.socialmedia.springmongodb.model;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.*;
-import javax.websocket.Decoder.Binary;
+import org.bson.types.Binary;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -24,7 +23,6 @@ public class Post {
 
     private HashMap<String, String> postedBy = new HashMap<String, String>(); 
 
-    @CreatedDate
     private Date created;
 
     private Date updated;

@@ -1,11 +1,10 @@
 package com.socialmedia.springmongodb.model;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.*;
+
 import java.util.Date;
 
 @Document(collection = "users")
@@ -24,11 +23,11 @@ public class User {
 
     private String salt;
 
-    @CreatedDate
     private Date created;
 
-    @LastModifiedDate
     private Date updated;
+
+    private String photo;
 
     public User() {
     }
@@ -95,11 +94,11 @@ public class User {
         this.updated = updated;
     }
 
-    public void removeSalt(String salt) {
-      this.salt = "";
+    public String getPhoto() {
+      return photo;
     }
 
-    public void removePassword(String hashed_password) {
-      this.hashed_password = "";
+    public void setPhoto(String photo) {
+      this.photo = photo;
     }
 }

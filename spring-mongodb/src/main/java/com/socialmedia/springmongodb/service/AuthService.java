@@ -68,7 +68,7 @@ public class AuthService {
     }
 
     public ResponseEntity<Object> signin(SigninRequest signinRequest) {
-        User user = userRepository.findByUsername(signinRequest.getUsername()).orElseThrow(()->new SpringSocialMediaException("Username :" + signinRequest.getUsername() + " Not Found!"));
+        User user = userRepository.findByUsername(signinRequest.getUsername()).orElseThrow(()->new SpringSocialMediaException("Username: " + signinRequest.getUsername() + " Not Found!"));
         BCryptPasswordEncoder b = new BCryptPasswordEncoder();
         Boolean result = b.matches(signinRequest.getPassword(), user.getPassword());
         if(result == false) {

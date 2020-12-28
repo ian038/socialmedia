@@ -29,11 +29,12 @@ export default function EditProfile() {
         username: '',
         email: '',
         password: '',
+        formData: '',
         error: '',
         success: false
     })
     const [redirectToProfile, setRedirectToProfile] = useState(false)
-    const { id, username, email, password, error } = values
+    const { id, username, email, password, formData, error } = values
     const { userId } = useParams()
 
     const fetchUser = () => {
@@ -50,6 +51,7 @@ export default function EditProfile() {
                 id: res.data.id,
                 username: res.data.username,
                 email: res.data.email,
+                formData: new FormData()
              })
         }).catch(error => {
             // user not authenticated, redirect
@@ -60,15 +62,15 @@ export default function EditProfile() {
     }
 
     const updateUser = user => {
+        console.log("UPDATE: ", user)
         return axios({
             method: 'put',
             url: `${process.env.REACT_APP_SERVER}/api/user/update/${userId}`,
             headers: {
                 Accept: "*/*",
-                "Content-Type": "application/json",
                 Authorization: `Bearer ${isAuthenticated().token}`
             },
-            data: JSON.stringify(user)
+            data: user
         })
     }
 
@@ -78,15 +80,18 @@ export default function EditProfile() {
 
     // higher order function to target name and event of form
     const handleChange = name => e => {
+        const value = name === 'image' ? e.target.files[0] : e.target.value
+        formData.append('image', value)
         // array syntax to target all input fields
-        setValues({ ...values, [name]: e.target.value })
+        setValues({ ...values, [name]: value })
     }
-
+    
     const handleSubmit = e => {
         e.preventDefault()
         setValues({ ...values, error: false })
         const user = { username, email, password: password || undefined }
-        updateUser(user).then(res => {
+        formData.append('user', new Blob([JSON.stringify(user)], { type: 'application/json' }))
+        updateUser(formData).then(res => {
             setRedirectToProfile(true)
         }).catch(error => {
             setValues({ ...values, error: error.response.data.details })
@@ -100,7 +105,16 @@ export default function EditProfile() {
     )
 
     const editProfileForm = () => (
-        <form className={classes.form} noValidate>
+        <form className={classes.form} enctype="multipart/form-data" noValidate>
+            <Typography component="h1" variant="subtitle1">
+                Profile Picture
+            </Typography>
+            <input
+            name="image"
+            type="file"
+            accept="image/*"
+            onChange={handleChange("image")}
+            />
             <TextField
             variant="outlined"
             margin="normal"

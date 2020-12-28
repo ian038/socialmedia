@@ -8,6 +8,7 @@ public class UserResponse {
     private String email;
     private Date created;
     private Date updated;
+    private String photo;
 
     public UserResponse() {
 	}
@@ -22,6 +23,10 @@ public class UserResponse {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPhoto() {
+        return photo;
     }
 
     public Date getCreatedDate() {
@@ -44,11 +49,15 @@ public class UserResponse {
         this.email = email;
     }
 
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     public void setCreatedDate(Date created) {
         this.created = created;
     }
 
     public void setUpdatedDate(Date updated) {
-        this.created = updated;
+        this.updated = updated;
     }
 }
