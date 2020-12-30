@@ -55,10 +55,7 @@ public class UserController {
     }
 
     // Get user profile photo
-    @GetMapping(value = "/photo/{id}")
-    // public ResponseEntity<Object> getUserProfilePhoto(@PathVariable("id") String id, HttpServletResponse response) {
-    //     return userService.getUserProfilePhoto(id);
-    // }
+    @GetMapping(value = "/photo/{id}", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
     public void getUserProfilePhoto(@PathVariable("id") String id, HttpServletResponse response)throws IllegalStateException, IOException {
         Photo photo = userService.getUserProfilePhoto(id);
         FileCopyUtils.copy(photo.getStream(), response.getOutputStream());

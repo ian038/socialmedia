@@ -30,12 +30,12 @@ export default function EditProfile() {
         email: '',
         password: '',
         formData: '',
-        photo: '',
         error: '',
         success: false
     })
     const [redirectToProfile, setRedirectToProfile] = useState(false)
-    const { id, username, email, password, formData, photo, error } = values
+    const [photo, setPhoto] = useState("")
+    const { id, username, email, password, formData, error } = values
     const { userId } = useParams()
 
     const fetchUser = () => {
@@ -62,29 +62,28 @@ export default function EditProfile() {
         })
     }
 
-    // const photoUrl = id ? `${process.env.REACT_APP_SERVER}/api/user/photo/${id}` : "https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png"
-
     const fetchPhoto = () => {
         axios({
             method: 'get',
             url: `${process.env.REACT_APP_SERVER}/api/user/photo/${userId}`,
+            responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",
                 Authorization: `Bearer ${isAuthenticated().token}`
             }
         }).then(res => {
-            // const base = Buffer.from(res.data, 'binary').toString('base64')
-            // setValues({
-            //     ...values,
-            //     photo: `data:image/*;base64,${base}`
-            //  })
+            const base = btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+            setPhoto(`data:image/*;base64, ${base}`)
         }).catch(error => {
+            // if photo does not exist, set default photo
+            if(error) {
+                setPhoto("https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png")
+            }
             console.log(error)
         })
     }
 
     const updateUser = user => {
-        console.log("UPDATE: ", user)
         return axios({
             method: 'put',
             url: `${process.env.REACT_APP_SERVER}/api/user/update/${userId}`,
@@ -98,6 +97,7 @@ export default function EditProfile() {
 
     useEffect(() => {
         fetchUser()
+        fetchPhoto()
     }, [])
 
     // higher order function to target name and event of form
@@ -127,8 +127,8 @@ export default function EditProfile() {
     )
 
     const editProfileForm = () => (
-        <form className={classes.form} enctype="multipart/form-data" noValidate>
-            <img src={fetchPhoto()} alt={username} />
+        <form className={classes.form} encType="multipart/form-data" noValidate>
+            <img src={photo} alt={username} style={{ width: '300px', height: '250px' }} />
             <Typography component="h1" variant="subtitle1">
                 Profile Picture
             </Typography>

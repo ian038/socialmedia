@@ -9,13 +9,11 @@ import com.socialmedia.springmongodb.repository.UserRepository;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -104,23 +102,6 @@ public class UserService {
             return new ResponseEntity<>("Error ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    // public ResponseEntity<Object> getUserProfilePhoto(String id) {
-    //     String contentType;
-    //     User user = userRepository.findById(id)
-    //             .orElseThrow(() -> new SpringSocialMediaException("User id: " + id + " Not Found!"));
-    //     GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(user.getPhoto())));
-    //     contentType = (String) file.getMetadata().get("_contentType");
-    //     Photo photo = new Photo();
-    //     try {
-    //         photo.setStream(operations.getResource(file).getInputStream());
-    //         return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).body(new InputStreamResource(photo.getStream()));
-    //     } catch (IllegalStateException e) {
-    //         return new ResponseEntity<>("Error " + e, HttpStatus.INTERNAL_SERVER_ERROR);  
-    //     } catch (IOException e) {
-    //         return new ResponseEntity<>("Error " + e, HttpStatus.INTERNAL_SERVER_ERROR);  
-    //     }
-    // }
 
     public Photo getUserProfilePhoto(String id) throws IllegalStateException, IOException {
         User user = userRepository.findById(id).orElseThrow(() -> new SpringSocialMediaException("User id: " + id + " Not Found!"));
