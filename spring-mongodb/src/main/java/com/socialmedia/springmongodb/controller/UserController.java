@@ -1,7 +1,9 @@
 package com.socialmedia.springmongodb.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +14,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.socialmedia.springmongodb.dto.Photo;
 import com.socialmedia.springmongodb.dto.UserUpdateRequest;
 import com.socialmedia.springmongodb.service.UserService;
 
@@ -37,12 +43,24 @@ public class UserController {
     }
 
     @PutMapping(value = "/update/{id}", consumes = "multipart/form-data")
-    public ResponseEntity<Object> updateUser(@PathVariable("id") String id, @Valid @RequestPart("user") UserUpdateRequest userUpdateRequest, @RequestPart("image") @Valid @NotBlank @NotNull MultipartFile file) {
+    public ResponseEntity<Object> updateUser(@PathVariable("id") String id,
+            @Valid @RequestPart("user") UserUpdateRequest userUpdateRequest,
+            @RequestPart("image") @Valid @NotBlank @NotNull MultipartFile file) {
         return userService.updateUser(id, userUpdateRequest, file);
     }
 
-    @DeleteMapping("/delete/{id}") 
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") String id) {
         return userService.deleteUser(id);
+    }
+
+    // Get user profile photo
+    @GetMapping(value = "/photo/{id}")
+    // public ResponseEntity<Object> getUserProfilePhoto(@PathVariable("id") String id, HttpServletResponse response) {
+    //     return userService.getUserProfilePhoto(id);
+    // }
+    public void getUserProfilePhoto(@PathVariable("id") String id, HttpServletResponse response)throws IllegalStateException, IOException {
+        Photo photo = userService.getUserProfilePhoto(id);
+        FileCopyUtils.copy(photo.getStream(), response.getOutputStream());
     }
 }

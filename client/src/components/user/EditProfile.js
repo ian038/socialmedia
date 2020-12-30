@@ -30,11 +30,12 @@ export default function EditProfile() {
         email: '',
         password: '',
         formData: '',
+        photo: '',
         error: '',
         success: false
     })
     const [redirectToProfile, setRedirectToProfile] = useState(false)
-    const { id, username, email, password, formData, error } = values
+    const { id, username, email, password, formData, photo, error } = values
     const { userId } = useParams()
 
     const fetchUser = () => {
@@ -58,6 +59,27 @@ export default function EditProfile() {
             if(error) {
                 setRedirectToProfile(true)
             }
+        })
+    }
+
+    // const photoUrl = id ? `${process.env.REACT_APP_SERVER}/api/user/photo/${id}` : "https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png"
+
+    const fetchPhoto = () => {
+        axios({
+            method: 'get',
+            url: `${process.env.REACT_APP_SERVER}/api/user/photo/${userId}`,
+            headers: {
+                Accept: "*/*",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            // const base = Buffer.from(res.data, 'binary').toString('base64')
+            // setValues({
+            //     ...values,
+            //     photo: `data:image/*;base64,${base}`
+            //  })
+        }).catch(error => {
+            console.log(error)
         })
     }
 
@@ -106,6 +128,7 @@ export default function EditProfile() {
 
     const editProfileForm = () => (
         <form className={classes.form} enctype="multipart/form-data" noValidate>
+            <img src={fetchPhoto()} alt={username} />
             <Typography component="h1" variant="subtitle1">
                 Profile Picture
             </Typography>
