@@ -30,12 +30,13 @@ export default function EditProfile() {
         email: '',
         password: '',
         formData: '',
+        about: '',
         error: '',
         success: false
     })
     const [redirectToProfile, setRedirectToProfile] = useState(false)
     const [photo, setPhoto] = useState("")
-    const { id, username, email, password, formData, error } = values
+    const { id, username, email, password, formData, about, error } = values
     const { userId } = useParams()
 
     const fetchUser = () => {
@@ -52,6 +53,7 @@ export default function EditProfile() {
                 id: res.data.id,
                 username: res.data.username,
                 email: res.data.email,
+                about: res.data.about,
                 formData: new FormData()
              })
         }).catch(error => {
@@ -79,7 +81,6 @@ export default function EditProfile() {
             if(error) {
                 setPhoto("https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png")
             }
-            console.log(error)
         })
     }
 
@@ -93,6 +94,15 @@ export default function EditProfile() {
             },
             data: user
         })
+    }
+
+    const updateLocalStorage = (user, next) => {
+        if(typeof window !== 'undefined') {
+            if(localStorage.getItem('username')) {
+                localStorage.setItem('username', JSON.stringify(user.username))
+            }
+        }
+        next()
     }
 
     useEffect(() => {
@@ -111,10 +121,12 @@ export default function EditProfile() {
     const handleSubmit = e => {
         e.preventDefault()
         setValues({ ...values, error: false })
-        const user = { username, email, password: password || undefined }
+        const user = { username, email, password: password || undefined, about }
         formData.append('user', new Blob([JSON.stringify(user)], { type: 'application/json' }))
         updateUser(formData).then(res => {
-            setRedirectToProfile(true)
+            updateLocalStorage(user, () => {
+                setRedirectToProfile(true)
+            })
         }).catch(error => {
             setValues({ ...values, error: error.response.data.details })
         })
@@ -128,7 +140,7 @@ export default function EditProfile() {
 
     const editProfileForm = () => (
         <form className={classes.form} encType="multipart/form-data" noValidate>
-            <img src={photo} alt={username} style={{ width: '300px', height: '250px' }} />
+            <img src={photo} alt={username} style={{ width: 'auto', height: '200px' }} />
             <Typography component="h1" variant="subtitle1">
                 Profile Picture
             </Typography>
@@ -169,6 +181,16 @@ export default function EditProfile() {
             autoComplete="current-password"
             onChange={handleChange("password")}
             value={password}
+            />
+            <TextField
+            variant="outlined"
+            multiline
+            margin="normal"
+            required
+            fullWidth
+            label="About"
+            onChange={handleChange("about")}
+            value={about}
             />
             <Button
             type="submit"

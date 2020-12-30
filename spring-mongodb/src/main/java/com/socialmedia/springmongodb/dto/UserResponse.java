@@ -9,6 +9,7 @@ public class UserResponse {
     private Date created;
     private Date updated;
     private String photo;
+    private String about;
 
     public UserResponse() {
 	}
@@ -59,5 +60,13 @@ public class UserResponse {
 
     public void setUpdatedDate(Date updated) {
         this.updated = updated;
+    }
+
+    public String getAbout() {
+        return about;
+      }
+  
+    public void setAbout(String about) {
+        this.about = about;
     }
 }

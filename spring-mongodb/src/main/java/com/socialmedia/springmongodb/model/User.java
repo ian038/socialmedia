@@ -29,6 +29,8 @@ public class User {
 
     private String photo;
 
+    private String about;
+
     public User() {
     }
 
@@ -100,5 +102,13 @@ public class User {
 
     public void setPhoto(String photo) {
       this.photo = photo;
+    }
+
+    public String getAbout() {
+      return about;
+    }
+
+    public void setAbout(String about) {
+      this.about = about;
     }
 }

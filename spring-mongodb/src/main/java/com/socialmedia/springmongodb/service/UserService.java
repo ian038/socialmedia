@@ -66,6 +66,7 @@ public class UserService {
         userResponse.setPhoto(user.getPhoto());
         userResponse.setCreatedDate(user.getCreated());
         userResponse.setUpdatedDate(user.getUpdated());
+        userResponse.setAbout(user.getAbout());
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
@@ -83,6 +84,7 @@ public class UserService {
         user.setEmail(userUpdateRequest.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(userUpdateRequest.getPassword()));
         user.setUpdated(new Date());
+        user.setAbout(userUpdateRequest.getAbout());
         userRepository.save(user);
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
@@ -91,6 +93,7 @@ public class UserService {
         userResponse.setPhoto(user.getPhoto());
         userResponse.setCreatedDate(user.getCreated());
         userResponse.setUpdatedDate(new Date());
+        userResponse.setAbout(user.getAbout());
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 

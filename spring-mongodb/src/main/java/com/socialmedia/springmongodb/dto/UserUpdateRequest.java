@@ -7,6 +7,7 @@ public class UserUpdateRequest {
     private String username;
     private String email;
     private String password;
+    private String about;
 
     public UserUpdateRequest() {
     }
@@ -25,5 +26,9 @@ public class UserUpdateRequest {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Za-z])(?=\\S+$).{8,}$", message = "Password must be 8 characters long and contain at least one digit")
     public String getPassword() {
         return password;
+    }
+
+    public String getAbout() {
+        return about;
     }
 }

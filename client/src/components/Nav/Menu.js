@@ -2,30 +2,15 @@ import { useState, Fragment } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isAuthenticated, signout } from '../../auth'
 
-import clsx from 'clsx';
 import { 
   Button,
   Tabs,
   Tab,
-  Drawer,
   AppBar, 
   Toolbar,
-  List,
   Typography,
-  Divider,
-  IconButton,
-  ListItemText,
-  ListItemIcon,
-  ListItem,
-  makeStyles, 
-  useTheme,
-  withTheme
+  makeStyles
 } from '@material-ui/core'
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const drawerWidth = 240;
 
@@ -65,8 +50,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Menu({ history }) {
   const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -78,18 +61,11 @@ function Menu({ history }) {
     else return { color: 'white' }
   }
 
-  const handleDrawer = () => {
-    open ? setOpen(false) : setOpen(true)
-  }
-
   return (
     <div className={classes.root}>
       <AppBar
         position="fixed"
         id="header-color"
-        className={clsx(classes.appBar, {
-            [classes.appBarShift]: open
-        })}
       >
         <Toolbar>
           {/* {isAuthenticated() ? 

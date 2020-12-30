@@ -76,7 +76,7 @@ public class AuthService {
             errorResponse.setDetails("Password is incorrect!");
             return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
         } 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getId(), signinRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
         AuthResponse authResponse = new AuthResponse();

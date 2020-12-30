@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Profile() {
     const classes = useStyles();
     const [user, setUser] = useState("")
+    const [photo, setPhoto] = useState("")
     const [redirectToSignin, setRedirectToSignin] = useState(false)
     const [redirect, setRedirect] = useState(false)
     const { userId } = useParams()
@@ -40,8 +41,29 @@ export default function Profile() {
         })
     }
 
+    const fetchPhoto = () => {
+        axios({
+            method: 'get',
+            url: `${process.env.REACT_APP_SERVER}/api/user/photo/${userId}`,
+            responseType: 'arraybuffer',
+            headers: {
+                Accept: "*/*",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            const base = btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+            setPhoto(`data:image/*;base64, ${base}`)
+        }).catch(error => {
+            // if photo does not exist, set default photo
+            if(error) {
+                setPhoto("https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png")
+            }
+        })
+    }
+
     useEffect(() => {
         fetchUser()
+        fetchPhoto()
     }, [])
 
     const deleteAccount = () => {
@@ -77,11 +99,12 @@ export default function Profile() {
                     <Typography component="h1" variant="h5">
                         Profile
                     </Typography>
-                    <img
-                    src="https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png"
-                    alt={user.username}
-                    height="75%"
-                    />
+                    <img src={photo} alt={user.username} style={{ width: 'auto', height: '200px' }} />
+                    <hr />
+                    <Typography variant="subtitle1" component="p">
+                        {user.about}
+                    </Typography>
+                    <hr />
                 </Grid>
                 <Grid item xs={4}>
                     <div style={{ marginTop: '10%' }}>
