@@ -5,6 +5,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.*;
 
+import com.socialmedia.springmongodb.dto.Follow;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 @Document(collection = "users")
@@ -30,6 +33,10 @@ public class User {
     private String photo;
 
     private String about;
+
+    private ArrayList<Follow> followers = new ArrayList<Follow>();
+
+    private ArrayList<Follow> following = new ArrayList<Follow>();
 
     public User() {
     }
@@ -110,5 +117,37 @@ public class User {
 
     public void setAbout(String about) {
       this.about = about;
+    }
+
+    public ArrayList<Follow> getFollowers() {
+      return followers;
+    }
+
+    public void addFollower(Follow follower) {
+      this.followers.add(follower);
+    }
+
+    public void removeFollower(String id) {
+      for(int i = (this.followers.size() - 1); i >= 0; i--) {
+        if(this.followers.get(i).getId() == id) {
+          this.followers.remove(i);
+        }
+      }
+    }
+
+    public ArrayList<Follow> getFollowing() {
+      return following;
+    }
+
+    public void addFollowing(Follow follow) {
+      this.following.add(follow);
+    }
+
+    public void removeFollowing(String id) {
+      for(int i = (this.following.size() - 1); i >= 0; i--) {
+        if(this.following.get(i).getId() == id) {
+          this.following.remove(i);
+        }
+      }
     }
 }

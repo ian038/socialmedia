@@ -1,5 +1,6 @@
 package com.socialmedia.springmongodb.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class UserResponse {
@@ -10,6 +11,8 @@ public class UserResponse {
     private Date updated;
     private String photo;
     private String about;
+    private ArrayList<Follow> followers = new ArrayList<Follow>();
+    private ArrayList<Follow> following = new ArrayList<Follow>();
 
     public UserResponse() {
 	}
@@ -68,5 +71,21 @@ public class UserResponse {
   
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public ArrayList<Follow> getFollowers() {
+        return followers;
+    }
+  
+    public void setFollowers(ArrayList<Follow> followers) {
+        this.followers = followers;
+    }
+  
+    public ArrayList<Follow> getFollowring() {
+        return following;
+    }
+  
+    public void setFollowing(ArrayList<Follow> following) {
+        this.following = following;
     }
 }

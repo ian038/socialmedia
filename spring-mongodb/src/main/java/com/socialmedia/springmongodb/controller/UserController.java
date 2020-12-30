@@ -60,4 +60,14 @@ public class UserController {
         Photo photo = userService.getUserProfilePhoto(id);
         FileCopyUtils.copy(photo.getStream(), response.getOutputStream());
     }
+
+    @PutMapping(value = "/follow/{userId}/{followId}")
+    public ResponseEntity<Object> addFollowingAndFollower(@PathVariable("userId") String userId, @PathVariable("followId") String followId) {
+        return userService.addFollowing(userId, followId);
+    }
+
+    @PutMapping(value = "/unfollow/{userId}/{unfollowId}")
+    public ResponseEntity<Object> removeFollowingAndFollower(@PathVariable("userId") String userId, @PathVariable("unfollowId") String unfollowId) {
+        return userService.removeFollowingAndFollower(userId, unfollowId);
+    }
 }

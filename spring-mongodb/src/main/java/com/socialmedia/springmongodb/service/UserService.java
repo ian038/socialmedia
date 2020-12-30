@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.socialmedia.springmongodb.dto.Follow;
 import com.socialmedia.springmongodb.dto.Photo;
 import com.socialmedia.springmongodb.dto.UserResponse;
 import com.socialmedia.springmongodb.dto.UserUpdateRequest;
@@ -67,6 +68,8 @@ public class UserService {
         userResponse.setCreatedDate(user.getCreated());
         userResponse.setUpdatedDate(user.getUpdated());
         userResponse.setAbout(user.getAbout());
+        userResponse.setFollowers(user.getFollowers());
+        userResponse.setFollowing(user.getFollowing());
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
@@ -112,5 +115,70 @@ public class UserService {
         Photo photo = new Photo();
         photo.setStream(operations.getResource(file).getInputStream());
         return photo;
+    }
+
+    public ResponseEntity<Object> addFollowing(String userId, String followId) {
+        // get user id
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new SpringSocialMediaException("User id: " + userId + " Not Found!"));
+        // get id of person you are following
+        User following = userRepository.findById(followId)
+            .orElseThrow(() -> new SpringSocialMediaException("Following id: " + followId + " Not Found!"));
+
+        // store info of person you are following
+        Follow follow = new Follow();
+        follow.setId(followId);
+        follow.setUsername(following.getUsername());
+        user.addFollowing(follow);
+
+        // store follower info
+        Follow follower = new Follow();
+        follower.setId(userId);
+        follower.setUsername(user.getUsername());
+        following.addFollower(follower);
+
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
+        userResponse.setUsername(user.getUsername());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setPhoto(user.getPhoto());
+        userResponse.setCreatedDate(user.getCreated());
+        userResponse.setUpdatedDate(new Date());
+        userResponse.setAbout(user.getAbout());
+        userResponse.setFollowing(user.getFollowing());
+        userResponse.setFollowers(user.getFollowers());
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> removeFollowingAndFollower(String userId, String unfollowId) {
+        // get user id
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new SpringSocialMediaException("User id: " + userId + " Not Found!"));
+        // get id of person you want to unfollowing
+        User unfollowing = userRepository.findById(unfollowId)
+            .orElseThrow(() -> new SpringSocialMediaException("Following id: " + unfollowId + " Not Found!"));
+
+        // store info of person you are unfollowing
+        Follow unfollow = new Follow();
+        unfollow.setId(unfollowId);
+        user.removeFollowing(unfollow.getId());
+
+        // store follower info
+        Follow follower = new Follow();
+        follower.setId(userId);
+        follower.setUsername(user.getUsername());
+        unfollowing.removeFollower(follower.getId());
+
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
+        userResponse.setUsername(user.getUsername());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setPhoto(user.getPhoto());
+        userResponse.setCreatedDate(user.getCreated());
+        userResponse.setUpdatedDate(new Date());
+        userResponse.setAbout(user.getAbout());
+        userResponse.setFollowing(user.getFollowing());
+        userResponse.setFollowers(user.getFollowers());
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 }
