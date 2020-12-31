@@ -63,7 +63,7 @@ public class UserController {
 
     @PutMapping(value = "/follow/{userId}/{followId}")
     public ResponseEntity<Object> addFollowingAndFollower(@PathVariable("userId") String userId, @PathVariable("followId") String followId) {
-        return userService.addFollowing(userId, followId);
+        return userService.addFollowingAndFollower(userId, followId);
     }
 
     @PutMapping(value = "/unfollow/{userId}/{unfollowId}")

@@ -117,11 +117,11 @@ public class UserService {
         return photo;
     }
 
-    public ResponseEntity<Object> addFollowing(String userId, String followId) {
-        // get user id
+    public ResponseEntity<Object> addFollowingAndFollower(String userId, String followId) {
+        // get user 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new SpringSocialMediaException("User id: " + userId + " Not Found!"));
-        // get id of person you are following
+        // get person you are following
         User following = userRepository.findById(followId)
             .orElseThrow(() -> new SpringSocialMediaException("Following id: " + followId + " Not Found!"));
 
