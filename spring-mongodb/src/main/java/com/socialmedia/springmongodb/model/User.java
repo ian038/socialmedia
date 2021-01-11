@@ -127,27 +127,11 @@ public class User {
       this.followers.add(follower);
     }
 
-    public void removeFollower(String id) {
-      for(int i = (this.followers.size() - 1); i >= 0; i--) {
-        if(this.followers.get(i).getId() == id) {
-          this.followers.remove(i);
-        }
-      }
-    }
-
     public ArrayList<Follow> getFollowing() {
       return following;
     }
 
     public void addFollowing(Follow follow) {
       this.following.add(follow);
-    }
-
-    public void removeFollowing(String id) {
-      for(int i = (this.following.size() - 1); i >= 0; i--) {
-        if(this.following.get(i).getId() == id) {
-          this.following.remove(i);
-        }
-      }
     }
 }

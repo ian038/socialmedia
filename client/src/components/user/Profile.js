@@ -20,7 +20,15 @@ export default function Profile() {
     const [photo, setPhoto] = useState("")
     const [redirectToSignin, setRedirectToSignin] = useState(false)
     const [redirect, setRedirect] = useState(false)
+    let [following, setFollowing] = useState(false)
     const { userId } = useParams()
+
+    const checkFollow = user => {
+        const match = user.followers.find(follower => {
+            return follower.id === isAuthenticated().id
+        })
+        return match
+    }
 
     const fetchUser = () => {
         axios({
@@ -33,6 +41,9 @@ export default function Profile() {
             }
         }).then(res => {
             setUser(res.data)
+            if(checkFollow(res.data)) {
+                setFollowing(true)
+            }
         }).catch(error => {
             // user not authenticated, redirect
             if(error) {
@@ -90,6 +101,39 @@ export default function Profile() {
         } 
     }
 
+    const handleFollow = () => {
+        axios({
+            method: 'put',
+            url: `${process.env.REACT_APP_SERVER}/api/user/follow/${isAuthenticated().id}/${userId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            setFollowing(!following)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    const handleUnfollow = () => {
+        axios({
+            method: 'put',
+            url: `${process.env.REACT_APP_SERVER}/api/user/unfollow/${isAuthenticated().id}/${userId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            console.log(res.data)
+            setFollowing(!following)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
     return (
         <div className={classes.root}>
             {redirectToSignin ? <Redirect to='/signin' /> : null}
@@ -118,7 +162,7 @@ export default function Profile() {
                             Joined: {new Date(user.createdDate).toDateString()}
                         </Typography>
                     </div>
-                    {isAuthenticated().id === userId && (
+                    {isAuthenticated().id === userId ? (
                         <div style={{ marginTop: '5%' }}>
                             <Button variant="contained" color="primary" href={`/user/edit/${userId}`}>
                                 Edit Profile
@@ -127,7 +171,21 @@ export default function Profile() {
                                 Delete Profile
                             </Button>
                         </div>
+                    ) : (
+                        <div style={{ marginTop: '5%' }}>
+                            {!following ? <Button variant="contained" color="primary" onClick={handleFollow}>
+                                Follow
+                            </Button> : 
+                            <Button variant="contained" color="secondary" onClick={handleUnfollow}>
+                                Unfollow
+                            </Button>
+                            }
+                        </div>
                     )}
+                    <div>
+                        <p>followers {JSON.stringify(user.followers)}</p>
+                        <p>following {JSON.stringify(user.following)}</p>
+                    </div>
                 </Grid>
             </Grid>
         </div>  

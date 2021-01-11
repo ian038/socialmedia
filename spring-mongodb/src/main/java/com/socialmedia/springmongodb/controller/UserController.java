@@ -53,8 +53,7 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable("id") String id) {
         return userService.deleteUser(id);
     }
-
-    // Get user profile photo
+ 
     @GetMapping(value = "/photo/{id}", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
     public void getUserProfilePhoto(@PathVariable("id") String id, HttpServletResponse response)throws IllegalStateException, IOException {
         Photo photo = userService.getUserProfilePhoto(id);

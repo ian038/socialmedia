@@ -81,7 +81,7 @@ public class UserResponse {
         this.followers = followers;
     }
   
-    public ArrayList<Follow> getFollowring() {
+    public ArrayList<Follow> getFollowing() {
         return following;
     }
   

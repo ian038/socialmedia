@@ -137,6 +137,9 @@ public class UserService {
         follower.setUsername(user.getUsername());
         following.addFollower(follower);
 
+        userRepository.save(user);
+        userRepository.save(following);
+
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
         userResponse.setUsername(user.getUsername());
@@ -158,16 +161,22 @@ public class UserService {
         User unfollowing = userRepository.findById(unfollowId)
             .orElseThrow(() -> new SpringSocialMediaException("Following id: " + unfollowId + " Not Found!"));
 
-        // store info of person you are unfollowing
-        Follow unfollow = new Follow();
-        unfollow.setId(unfollowId);
-        user.removeFollowing(unfollow.getId());
+        // remove info of person you are unfollowing
+        for(int i = (user.getFollowing().size() - 1); i >= 0; i--) {
+            if(user.getFollowing().get(i).getId().equals(unfollowId)) {
+                user.getFollowing().remove(i);
+            }
+        }
 
-        // store follower info
-        Follow follower = new Follow();
-        follower.setId(userId);
-        follower.setUsername(user.getUsername());
-        unfollowing.removeFollower(follower.getId());
+        // remove follower info
+        for(int i = (unfollowing.getFollowers().size() - 1); i >= 0; i--) {
+            if(unfollowing.getFollowers().get(i).getId().equals(userId)) {
+                unfollowing.getFollowers().remove(i);
+            }
+        }
+        
+        userRepository.save(user);
+        userRepository.save(unfollowing);
 
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
