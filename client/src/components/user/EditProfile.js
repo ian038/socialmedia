@@ -77,10 +77,7 @@ export default function EditProfile() {
             const base = btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))
             setPhoto(`data:image/*;base64, ${base}`)
         }).catch(error => {
-            // if photo does not exist, set default photo
-            if(error) {
-                setPhoto("https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png")
-            }
+            console.log(error)
         })
     }
 
@@ -140,7 +137,11 @@ export default function EditProfile() {
 
     const editProfileForm = () => (
         <form className={classes.form} encType="multipart/form-data" noValidate>
-            <img src={photo} alt={username} style={{ width: 'auto', height: '200px' }} />
+            <img 
+            src={photo} 
+            alt={username} 
+            onError={i => (i.target.src="https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png")}
+            style={{ width: 'auto', height: '200px' }} />
             <Typography component="h1" variant="subtitle1">
                 Profile Picture
             </Typography>

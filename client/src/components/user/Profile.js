@@ -4,6 +4,8 @@ import { Button, Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
 import { signout, isAuthenticated } from '../../auth'
+import Following from './Following'
+import Follower from './Follower'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -65,10 +67,7 @@ export default function Profile() {
             const base = btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))
             setPhoto(`data:image/*;base64, ${base}`)
         }).catch(error => {
-            // if photo does not exist, set default photo
-            if(error) {
-                setPhoto("https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png")
-            }
+            console.log(error)
         })
     }
 
@@ -143,14 +142,27 @@ export default function Profile() {
                     <Typography component="h1" variant="h5">
                         Profile
                     </Typography>
-                    <img src={photo} alt={user.username} style={{ width: 'auto', height: '200px' }} />
+                    <img 
+                    src={photo} 
+                    alt={user.username} 
+                    onError={i => (i.target.src="https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png")}
+                    style={{ width: 'auto', height: '200px' }} />
                     <hr />
                     <Typography variant="subtitle1" component="p">
                         {user.about}
                     </Typography>
                     <hr />
+                    <div style={{ marginTop: '4%' }}>
+                        <Typography variant="h6" component="h1">
+                            Followers
+                        </Typography>
+                        {user.followers ?
+                        user.followers.map((follower, i) => {
+                            return <Follower key={i} follower={follower} />
+                        }) : []}
+                    </div>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <div style={{ marginTop: '10%' }}>
                         <Typography variant="subtitle1" component="p">
                             Hello {user.username}
@@ -163,7 +175,7 @@ export default function Profile() {
                         </Typography>
                     </div>
                     {isAuthenticated().id === userId ? (
-                        <div style={{ marginTop: '5%' }}>
+                        <div style={{ marginTop: '5%', marginBottom: '1%' }}>
                             <Button variant="contained" color="primary" href={`/user/edit/${userId}`}>
                                 Edit Profile
                             </Button>
@@ -172,7 +184,7 @@ export default function Profile() {
                             </Button>
                         </div>
                     ) : (
-                        <div style={{ marginTop: '5%' }}>
+                        <div style={{ marginTop: '5%', marginBottom: '1%' }}>
                             {!following ? <Button variant="contained" color="primary" onClick={handleFollow}>
                                 Follow
                             </Button> : 
@@ -182,10 +194,20 @@ export default function Profile() {
                             }
                         </div>
                     )}
-                    <div>
-                        <p>followers {JSON.stringify(user.followers)}</p>
-                        <p>following {JSON.stringify(user.following)}</p>
+                    <div style={{ marginTop: '27%' }}>
+                        <Typography variant="h6" component="h1">
+                            Following
+                        </Typography>
+                        {user.following ?
+                        user.following.map((following, i) => {
+                            return <Following key={i} following={following} />
+                        }) : []}
                     </div>
+                </Grid>
+                <Grid item xs={3}>
+                    <Typography variant="h6" component="h1">
+                        Posts
+                    </Typography>
                 </Grid>
             </Grid>
         </div>  

@@ -7,6 +7,7 @@ import Signin from './components/User/Signin'
 import Users from './components/User/Users'
 import EditProfile from './components/User/EditProfile'
 import PrivateRoute from './auth/PrivateRoute'
+import FindPeople from './components/User/FindPeople'
 
 export default function Main() {
     return (
@@ -18,6 +19,7 @@ export default function Main() {
                 <Route exact path='/signin' component={Signin} />
                 <PrivateRoute exact path='/user/:userId' component={Profile} />
                 <PrivateRoute exact path='/user/edit/:userId' component={EditProfile} />
+                <PrivateRoute exact path='/findpeople/' component={FindPeople} />
                 <Route exact path='/users' component={Users} />
             </Switch>
         </BrowserRouter>

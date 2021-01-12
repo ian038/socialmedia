@@ -3,6 +3,7 @@ package com.socialmedia.springmongodb.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.socialmedia.springmongodb.repository.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JacksonInject.Value;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.socialmedia.springmongodb.dto.Follow;
 import com.socialmedia.springmongodb.dto.Photo;
@@ -189,5 +191,29 @@ public class UserService {
         userResponse.setFollowing(user.getFollowing());
         userResponse.setFollowers(user.getFollowers());
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<Object>> findPeople(String id) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new SpringSocialMediaException("User id: " + id + " Not Found!"));
+        List<User> userList = userRepository.findAll();
+        List<Object> finalList = new ArrayList<Object>();
+        HashMap<String, String> map = new HashMap<String, String>();
+        for(int i = 0; i < userList.size(); i++) {
+            if(!map.containsKey(userList.get(i).getId())) {
+                map.put(userList.get(i).getId(), userList.get(i).getUsername());
+            }
+        }
+        for(int i = 0; i < user.getFollowing().size(); i++) {
+            if(map.containsKey(user.getFollowing().get(i).getId()) && map.containsKey(id)) {
+                map.remove(user.getFollowing().get(i).getId());
+                map.remove(id);
+            }
+        }
+        UserResponse userResponse = new UserResponse();
+        map.forEach((key, value) -> userResponse.setId(key));
+        map.forEach((key, value) -> userResponse.setUsername(value));
+        finalList.add(userResponse);
+        return new ResponseEntity<>(finalList, HttpStatus.OK);
     }
 }

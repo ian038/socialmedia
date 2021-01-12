@@ -15,7 +15,7 @@ public class UserResponse {
     private ArrayList<Follow> following = new ArrayList<Follow>();
 
     public UserResponse() {
-	}
+    }
 
 	public String getId() {
         return id;

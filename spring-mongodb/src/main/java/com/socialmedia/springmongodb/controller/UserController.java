@@ -69,4 +69,9 @@ public class UserController {
     public ResponseEntity<Object> removeFollowingAndFollower(@PathVariable("userId") String userId, @PathVariable("unfollowId") String unfollowId) {
         return userService.removeFollowingAndFollower(userId, unfollowId);
     }
+
+    @GetMapping("/findpeople/{id}")
+    public ResponseEntity<?> findPeople(@PathVariable("id") String id) {
+        return userService.findPeople(id);
+    }
 }
