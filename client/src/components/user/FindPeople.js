@@ -31,9 +31,15 @@ export default function FindPeople() {
         })
     }
 
+    const toFollow = i => {
+        let follow = people
+        people.splice(i, 1)
+        setPeople(follow)
+    }
+
     useEffect(() => {
         findPeople()
-    }, [])
+    }, [setPeople])
 
     return (
         <div className={classes.root}>
@@ -43,7 +49,7 @@ export default function FindPeople() {
             <Grid container spacing={4} style={{ marginTop: '1%', marginLeft: '1%' }}>
                 {people ?
                 people.map((person, i) => {
-                    return <FindPeopleCard key={i} person={person} />
+                    return <FindPeopleCard key={i} index={i} person={person} toFollow={i => toFollow(i)} />
                 }) : []}
             </Grid>
         </div>

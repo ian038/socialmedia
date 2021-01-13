@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Card, CardContent, Typography, CardActionArea, CardActions, CardMedia, Grid } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import { isAuthenticated } from '../../auth'
 
 const useStyles = makeStyles({
@@ -17,10 +18,11 @@ const useStyles = makeStyles({
     }
 })
 
-export default function FindPeopleCard({ person }) {
-    console.log(person.usernmae)
+export default function FindPeopleCard({ person, toFollow, index }) {
     const classes = useStyles()
     const[photo, setPhoto] = useState("")
+    const [error, setError] = useState("")
+    const [followMessage, setFollowMessage] = useState("")
     
     const fetchPhoto = id => {
         axios({
@@ -42,11 +44,39 @@ export default function FindPeopleCard({ person }) {
         })
     }
 
+    const handleFollow = () => {
+        axios({
+            method: 'put',
+            url: `${process.env.REACT_APP_SERVER}/api/user/follow/${isAuthenticated().id}/${person.id}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            if(res.data) {
+                toFollow(index)
+                setFollowMessage(`Following ${person.username}`)
+                window.location.reload()
+            }
+        }).catch(error => {
+            setError(error.res)
+        })
+    }
+
+    const showFollowMessage = () => (
+        <Alert severity="success" style={{ display: followMessage ? '' : 'none' }}>
+            {followMessage}
+        </Alert>
+    )
+
     useEffect(() => {
         fetchPhoto(person.id)
     }, [])
+
     return (
         <Grid item xs={2}> 
+        {showFollowMessage()}
         <Card variant="outlined" className={classes.card}>
             <CardActionArea>
                 <CardMedia 
@@ -63,6 +93,9 @@ export default function FindPeopleCard({ person }) {
             <CardActions>
                 <Button size="small" color="primary" to={`/user/${person.id}`} component={Link}>
                     View Profile
+                </Button>
+                <Button size="small" variant="contained" color="primary" component={Link} style={{ marginLeft: '32%' }} onClick={handleFollow}>
+                    Follow
                 </Button>
             </CardActions>
             </Card>

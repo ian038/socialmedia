@@ -33,7 +33,7 @@ export default function Users() {
 
     useEffect(() => {
         fetchUsers()
-    }, [])
+    }, [setUsers])
 
     return (
         <div className={classes.root}>
