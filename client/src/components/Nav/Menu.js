@@ -88,7 +88,8 @@ function Menu({ history }) {
                 <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="nav tabs example">
                   <Tab label="Home" to="/" component={Link} style={isActive(history, '/')} />
                   <Tab label={`${isAuthenticated().username}'s profile`} to={`/user/${isAuthenticated().id}`} component={Link} style={isActive(history, `/user/${isAuthenticated().id}`)}  />
-                  <Tab label="Users" to="/users" component={Link} style={isActive(history, '/users')}  />
+                  <Tab label="Users" to="/users" component={Link} style={isActive(history, '/users')} />
+                  <Tab label="Find People" to="/findpeople" component={Link} style={isActive(history, '/findpeople')}  />
                 </Tabs>
                 <Button variant="contained" color="secondary" className={classes.button} onClick={() => signout(() => { history.push('/') })}>
                     Sign Out

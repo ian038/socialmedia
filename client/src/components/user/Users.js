@@ -41,9 +41,10 @@ export default function Users() {
                 Users
             </Typography>
             <Grid container spacing={4} style={{ marginTop: '1%', marginLeft: '1%' }}>
-                {users.map((user, i) => {
+                { users ?
+                users.map((user, i) => {
                     return <UserCard key={i} user={user} />
-                })}
+                }) : []}
             </Grid>
         </div>
     )

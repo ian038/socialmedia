@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { isAuthenticated } from '../../auth'
+import FindPeopleCard from './FindPeopleCard'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +25,7 @@ export default function FindPeople() {
                 Authorization: `Bearer ${isAuthenticated().token}`
             }
         }).then(res => {
-            console.log(res)
+            setPeople(res.data)
         }).catch(error => {
             console.log(error)
         })
@@ -39,11 +40,12 @@ export default function FindPeople() {
             <Typography component="h1" variant="h5">
                 Users
             </Typography>
-            {/* <Grid container spacing={4} style={{ marginTop: '1%', marginLeft: '1%' }}>
-                {users.map((user, i) => {
-
-                })}
-            </Grid> */}
+            <Grid container spacing={4} style={{ marginTop: '1%', marginLeft: '1%' }}>
+                {people ?
+                people.map((person, i) => {
+                    return <FindPeopleCard key={i} person={person} />
+                }) : []}
+            </Grid>
         </div>
     )
 }

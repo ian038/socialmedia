@@ -126,7 +126,6 @@ export default function Profile() {
                 Authorization: `Bearer ${isAuthenticated().token}`
             }
         }).then(res => {
-            console.log(res.data)
             setFollowing(!following)
         }).catch(error => {
             console.log(error)

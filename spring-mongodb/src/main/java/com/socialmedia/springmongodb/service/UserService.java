@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.socialmedia.springmongodb.repository.UserRepository;
 
@@ -19,9 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.annotation.JacksonInject.Value;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.socialmedia.springmongodb.dto.Follow;
+import com.socialmedia.springmongodb.dto.FollowResponse;
 import com.socialmedia.springmongodb.dto.Photo;
 import com.socialmedia.springmongodb.dto.UserResponse;
 import com.socialmedia.springmongodb.dto.UserUpdateRequest;
@@ -204,16 +205,22 @@ public class UserService {
                 map.put(userList.get(i).getId(), userList.get(i).getUsername());
             }
         }
+        // remove user's id
+        if(map.containsKey(id)) {
+            map.remove(id);
+        }
         for(int i = 0; i < user.getFollowing().size(); i++) {
-            if(map.containsKey(user.getFollowing().get(i).getId()) && map.containsKey(id)) {
+            // remove person user is already following
+            if(map.containsKey(user.getFollowing().get(i).getId())) {
                 map.remove(user.getFollowing().get(i).getId());
-                map.remove(id);
             }
         }
-        UserResponse userResponse = new UserResponse();
-        map.forEach((key, value) -> userResponse.setId(key));
-        map.forEach((key, value) -> userResponse.setUsername(value));
-        finalList.add(userResponse);
+        for(Map.Entry mapElement: map.entrySet()) {
+            String key = (String)mapElement.getKey();
+            String value = (String)mapElement.getValue();
+            FollowResponse followResponse = new FollowResponse(key, value);
+            finalList.add(followResponse);
+        }
         return new ResponseEntity<>(finalList, HttpStatus.OK);
     }
 }
