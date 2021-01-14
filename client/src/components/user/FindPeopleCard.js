@@ -57,7 +57,9 @@ export default function FindPeopleCard({ person, toFollow, index }) {
             if(res.data) {
                 toFollow(index)
                 setFollowMessage(`Following ${person.username}`)
-                window.location.reload()
+                setTimeout(function () {
+                    window.location.reload()
+                }, 2000)
             }
         }).catch(error => {
             setError(error.res)
