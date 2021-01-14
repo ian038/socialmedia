@@ -3,7 +3,6 @@ package com.socialmedia.springmongodb.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.*;
-import org.bson.types.Binary;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -19,7 +18,7 @@ public class Post {
     @Size(min = 4, max = 2000, message = "Post body should have at least 4 characters and should not be more than 2000 characters long")
     private String body;
 
-    private Binary photo;
+    private String photo;
 
     private HashMap<String, String> postedBy = new HashMap<String, String>(); 
 
@@ -54,11 +53,11 @@ public class Post {
       this.body = body;
     }
 
-    public Binary getPhoto() {
+    public String getPhoto() {
       return photo;
     }
 
-    public void setPhoto(Binary photo) {
+    public void setPhoto(String photo) {
       this.photo = photo;
     }
 

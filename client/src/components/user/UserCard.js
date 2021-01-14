@@ -17,7 +17,6 @@ const useStyles = makeStyles({
     }
 })
 
-
 export default function UserCard({ user }) {
     const classes = useStyles()
     const[photo, setPhoto] = useState("")
@@ -69,7 +68,7 @@ export default function UserCard({ user }) {
                         View Profile
                     </Button>
                 </CardActions>
-                </Card>
+            </Card>
         </Grid>
     )
 }

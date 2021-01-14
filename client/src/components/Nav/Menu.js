@@ -90,6 +90,7 @@ function Menu({ history }) {
                   <Tab label={`${isAuthenticated().username}'s profile`} to={`/user/${isAuthenticated().id}`} component={Link} style={isActive(history, `/user/${isAuthenticated().id}`)}  />
                   <Tab label="Users" to="/users" component={Link} style={isActive(history, '/users')} />
                   <Tab label="Find People" to="/findpeople" component={Link} style={isActive(history, '/findpeople')}  />
+                  <Tab label="Create Post" to="/post/create" component={Link} style={isActive(history, '/post/create')}  />
                 </Tabs>
                 <Button variant="contained" color="secondary" className={classes.button} onClick={() => signout(() => { history.push('/') })}>
                     Sign Out

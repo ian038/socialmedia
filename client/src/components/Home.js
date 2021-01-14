@@ -1,5 +1,6 @@
-import { Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Typography } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import Posts from './Post/Posts'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,6 +18,7 @@ export default function Home() {
         Home
       </Typography>
       <p className="lead">Welcome to React Frontend</p>
+      <Posts />
     </div>
   )
 }
