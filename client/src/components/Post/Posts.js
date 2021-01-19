@@ -25,7 +25,6 @@ export default function Posts() {
                 Authorization: `Bearer ${isAuthenticated().token}`
             }
         }).then(res => {
-            console.log(res.data)
             setPosts(res.data)
         }).catch(error => {
             console.log(error)

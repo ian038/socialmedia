@@ -43,6 +43,12 @@ public class PostService {
         return new ResponseEntity<>(postRepository.findAll(), HttpStatus.OK);
     }
 
+    public ResponseEntity<Post> getPostbyId(String id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new SpringSocialMediaException("Post id: " + id + " Not Found!"));
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
     public ResponseEntity<Object> createPost(String userId, Post post, MultipartFile file) {
         User userInfo = userRepository.findById(userId)
                 .orElseThrow(() -> new SpringSocialMediaException("User id :" + userId + " Not Found!"));
@@ -67,8 +73,8 @@ public class PostService {
     }
 
     public Photo getPostPhoto(String id) throws IllegalStateException, IOException {
-        User user = userRepository.findById(id).orElseThrow(() -> new SpringSocialMediaException("User id: " + id + " Not Found!"));
-        GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(user.getPhoto())));
+        Post post = postRepository.findById(id).orElseThrow(() -> new SpringSocialMediaException("Post id: " + id + " Not Found!"));
+        GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(post.getPhoto())));
         Photo photo = new Photo();
         photo.setStream(operations.getResource(file).getInputStream());
         return photo;
@@ -76,10 +82,7 @@ public class PostService {
 
     public ResponseEntity<List<Post>> getPostByUser(String userId) {
         List<Post> postedBy = postRepository.findByUserId(userId);
-        for (int i = 0; i < postedBy.size(); i++) {
-            System.out.println(postedBy.get(i).getId());
-        }
-        return new ResponseEntity<>(postRepository.findByUserId(userId), HttpStatus.OK);
+        return new ResponseEntity<>(postedBy, HttpStatus.OK);
     }
 
     public ResponseEntity<Object> updatePost(String userId, String postId, Post postRequest) {

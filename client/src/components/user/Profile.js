@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useParams, Redirect } from 'react-router-dom'
-import { Button, Grid, Typography } from '@material-ui/core'
+import { useParams, Redirect, Link } from 'react-router-dom'
+import { Button, Grid, Typography, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
 import { signout, isAuthenticated } from '../../auth'
@@ -20,6 +20,7 @@ export default function Profile() {
     const classes = useStyles();
     const [user, setUser] = useState("")
     const [photo, setPhoto] = useState("")
+    const [posts, setPosts] = useState([])
     const [redirectToSignin, setRedirectToSignin] = useState(false)
     const [redirect, setRedirect] = useState(false)
     let [following, setFollowing] = useState(false)
@@ -71,9 +72,26 @@ export default function Profile() {
         })
     }
 
+    const fetchPostByUser = () => {
+        axios({
+            method: 'get',
+            url: `${process.env.REACT_APP_SERVER}/api/post/by/${userId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            setPosts(res.data)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
     useEffect(() => {
         fetchUser()
         fetchPhoto()
+        fetchPostByUser()
     }, [])
 
     const deleteAccount = () => {
@@ -136,7 +154,7 @@ export default function Profile() {
         <div className={classes.root}>
             {redirectToSignin ? <Redirect to='/signin' /> : null}
             {redirect ? <Redirect to='/' /> : null}
-            <Grid container spacing={6} className={classes.grid}>
+            <Grid container spacing={5} className={classes.grid}>
                 <Grid item xs={3}>
                     <Typography component="h1" variant="h5">
                         Profile
@@ -161,7 +179,7 @@ export default function Profile() {
                         }) : []}
                     </div>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <div style={{ marginTop: '10%' }}>
                         <Typography variant="subtitle1" component="p">
                             Hello {user.username}
@@ -175,6 +193,9 @@ export default function Profile() {
                     </div>
                     {isAuthenticated().id === userId ? (
                         <div style={{ marginTop: '5%', marginBottom: '1%' }}>
+                            <Button variant="contained" href={`/post/create`} style={{ marginRight: '5%' }}>
+                                Create Post
+                            </Button>
                             <Button variant="contained" color="primary" href={`/user/edit/${userId}`}>
                                 Edit Profile
                             </Button>
@@ -193,7 +214,7 @@ export default function Profile() {
                             }
                         </div>
                     )}
-                    <div style={{ marginTop: '27%' }}>
+                    <div style={{ marginTop: '16%' }}>
                         <Typography variant="h6" component="h1">
                             Following
                         </Typography>
@@ -203,10 +224,22 @@ export default function Profile() {
                         }) : []}
                     </div>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={3} style={{ marginTop: '16%' }}>
                     <Typography variant="h6" component="h1">
                         Posts
                     </Typography>
+                    {posts ?
+                        posts.map((post, i) => {
+                            return <div key={i}>
+                                <Link to={`/post/${post.id}`}>
+                                    <Typography variant="h6" component="h6">
+                                        <Box fontWeight="fontWeightBold">
+                                            {post.title}             
+                                        </Box>
+                                    </Typography>
+                                </Link>
+                            </div>
+                        }) : []}
                 </Grid>
             </Grid>
         </div>  

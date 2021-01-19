@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Card, CardContent, Typography, CardActionArea, CardActions, CardMedia, Grid, Box } from '@material-ui/core'
+import { Button, Card, CardContent, Typography, CardActionArea, CardActions, CardMedia, Box } from '@material-ui/core'
 import { isAuthenticated } from '../../auth'
 
 const useStyles = makeStyles(theme => ({
     root: {
-        flexGrow: 1
-    },
-    body: {
-        justifyContent: 'space-between'
+        marginTop: theme.spacing(13),
     },
     card: {
         maxHeight: 450,
@@ -20,16 +17,34 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function PostCard({ post }) {
+export default function SinglePost() {
     const classes = useStyles()
-    const[photo, setPhoto] = useState("")
+    const [post, setPost] = useState("")
+    const [photo, setPhoto] = useState("")
+    const { postId } = useParams()
     const posterId = post.postedBy ? `/user/${post.postedBy.id}` : ""
     const posterName = post.postedBy ? post.postedBy.username : "Unknown"
-    
-    const fetchPhoto = id => {
+
+    const fetchPost = () => {
         axios({
             method: 'get',
-            url: `${process.env.REACT_APP_SERVER}/api/post/photo/${id}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/${postId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            setPost(res.data)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    const fetchPhoto = () => {
+        axios({
+            method: 'get',
+            url: `${process.env.REACT_APP_SERVER}/api/post/photo/${postId}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",
@@ -47,25 +62,26 @@ export default function PostCard({ post }) {
     }
 
     useEffect(() => {
-        fetchPhoto(post.id)
+        fetchPost()
+        fetchPhoto()
     }, [])
 
     return (
-        <Grid item xs={3}> 
+        <div className={classes.root}>
+            <Typography variant="h6" component="h6" style={{ textAlign: 'center' }}>
+                {post.title}             
+            </Typography>
             <Card variant="outlined" className={classes.card}>
                 <CardActionArea>
                     <CardMedia 
                     component="img"
                     image={photo}
-                    height="200px"
-                    width="auto"
+                    height="300px"
+                    width="100%"
                     />
                     <CardContent>
-                        <Typography variant="h6" component="h6" style={{ marginBottom: '5%' }}>
-                            {post.title}             
-                        </Typography>
                         <Typography variant="body2" color="textSecondary" component="p">
-                            {post.body.substring(0, 25)}
+                            {post.body}
                         </Typography>
                         <br/>
                         <Typography variant="body2" color="textSecondary" component="p">
@@ -76,11 +92,11 @@ export default function PostCard({ post }) {
                     </CardContent>
                 </CardActionArea>
                 <CardActions>
-                     <Button size="small" variant="contained" color="primary" to={`/post/${post.id}`} component={Link}>
-                        Read More
+                     <Button size="small" variant="contained" color="primary" to={`/`} component={Link}>
+                        Home
                     </Button>
                 </CardActions>
             </Card>
-        </Grid>
+        </div>
     )
 }

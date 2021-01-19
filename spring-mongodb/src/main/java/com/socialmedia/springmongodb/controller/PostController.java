@@ -39,6 +39,11 @@ public class PostController {
         return postService.getPosts();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Post> getPostbyId(@PathVariable("id") String id) {
+        return postService.getPostbyId(id);
+    }
+
     @PostMapping(value = "/new/{userId}", consumes = "multipart/form-data")
     public ResponseEntity<Object> createPost(@PathVariable("userId") String userId, @Valid @RequestPart("post") Post post, @RequestPart("image") @Valid @NotBlank @NotNull MultipartFile file) {
         return postService.createPost(userId, post, file);
