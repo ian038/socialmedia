@@ -49,7 +49,6 @@ export default function Signup() {
         signup(user).then(res => {
             setValues({ ...values, username: '', email: '', password: '', error: '', success: true })
         }).catch(error => {
-            console.log(error.response)
             setValues({ ...values, error: error.response.data.details, success: false })
         })
     }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { useParams, Redirect } from 'react-router-dom'
 import { Button, TextField, Typography, Container, CircularProgress } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { makeStyles } from '@material-ui/core/styles'
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
   }))
 
-export default function NewPost() {
+export default function EditPost() {
     const classes = useStyles()
     const [values, setValues] = useState({
         title: '',
@@ -33,11 +33,51 @@ export default function NewPost() {
         redirectToProfile: false
     })
     const { title, body, formData, error, loading, redirectToProfile } = values
+    const [photo, setPhoto] = useState("")
+    const { postId } = useParams()
 
-    const createPost = post => {
+    const fetchPost = () => {
+        axios({
+            method: 'get',
+            url: `${process.env.REACT_APP_SERVER}/api/post/${postId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            setValues({
+                id: res.data.id,
+                title: res.data.title,
+                body: res.data.body,
+                formData: new FormData()
+             })
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    const fetchPhoto = () => {
+        axios({
+            method: 'get',
+            url: `${process.env.REACT_APP_SERVER}/api/post/photo/${postId}`,
+            responseType: 'arraybuffer',
+            headers: {
+                Accept: "*/*",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            const base = btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+            setPhoto(`data:image/*;base64, ${base}`)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    const updatePost = post => {
         return axios({
-            method: 'post',
-            url: `${process.env.REACT_APP_SERVER}/api/post/new/${isAuthenticated().id}`,
+            method: 'put',
+            url: `${process.env.REACT_APP_SERVER}/api/post/update/${isAuthenticated().id}/${postId}`,
             headers: {
                 Accept: "*/*",
                 Authorization: `Bearer ${isAuthenticated().token}`
@@ -47,28 +87,26 @@ export default function NewPost() {
     }
 
     useEffect(() => {
-        setValues({
-            ...values,
-            formData: new FormData()
-        })
+        fetchPost()
+        fetchPhoto()
     }, [])
 
-    // higher order function to target name and event of form
     const handleChange = name => e => {
         const value = name === 'image' ? e.target.files[0] : e.target.value
         formData.append('image', value)
         // array syntax to target all input fields
         setValues({ ...values, [name]: value })
     }
-    
+
     const handleSubmit = e => {
         e.preventDefault()
-        setValues({ ...values, error: false, loading: true })
+        setValues({ ...values, error: false })
         const post = { title, body }
         formData.append('post', new Blob([JSON.stringify(post)], { type: 'application/json' }))
-        createPost(formData).then(res => {
+        updatePost(formData).then(res => {
             setValues({ ...values, loading: false, title: '', body: '', redirectToProfile: true })
         }).catch(error => {
+            console.log(error)
             setValues({ ...values, error: error.response.data.details })
         })
     }
@@ -83,8 +121,13 @@ export default function NewPost() {
         </Alert>
     )
 
-    const createPostForm = () => (
+    const editPostForm = () => (
         <form className={classes.form} encType="multipart/form-data" noValidate>
+            <img 
+            src={photo} 
+            alt={title} 
+            onError={i => (i.target.src="https://www.flickr.com/photos/glaciernps/28806955114/in/album-72157670140016374/")}
+            style={{ width: '100%', height: '200px' }} />
             <Typography component="h1" variant="subtitle1">
                 Upload Image Here
             </Typography>
@@ -125,21 +168,21 @@ export default function NewPost() {
             className={classes.submit}
             onClick={handleSubmit}
             >
-            Create Post
+            Edit Post
             </Button>
         </form>
     )
 
     return (
         <Container maxWidth="xs">
-        {redirectToProfile ? <Redirect to={`/user/${isAuthenticated().id}`} /> : null}
+        {redirectToProfile ? <Redirect to={`/`} /> : null}
         <div className={classes.paper}>
             {showLoading()}
             {showError()}
             <Typography component="h1" variant="h5">
-                Create New Post
+                Edit Post
             </Typography>
-            {createPostForm()}
+            {editPostForm()}
         </div>
         </Container>
     )

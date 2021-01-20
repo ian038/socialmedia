@@ -60,9 +60,9 @@ public class PostController {
         FileCopyUtils.copy(photo.getStream(), response.getOutputStream());
     }
 
-    @PutMapping("/update/{userId}/{postId}")
-    public ResponseEntity<Object> updateUser(@PathVariable("userId") String userId, @PathVariable("postId") String postId, @Valid @RequestBody Post post) {
-        return postService.updatePost(userId, postId, post);
+    @PutMapping(value = "/update/{userId}/{postId}", consumes = "multipart/form-data")
+    public ResponseEntity<Object> updateUser(@PathVariable("userId") String userId, @PathVariable("postId") String postId, @Valid @RequestPart("post") Post post, @RequestPart("image") @Valid @NotBlank @NotNull MultipartFile file) {
+        return postService.updatePost(userId, postId, post, file);
     }
 
     @DeleteMapping("/delete/{userId}/{postId}") 

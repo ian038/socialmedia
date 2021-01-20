@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Redirect, Link } from 'react-router-dom'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Card, CardContent, Typography, CardActionArea, CardActions, CardMedia, Box } from '@material-ui/core'
@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
         marginTop: theme.spacing(13),
     },
     card: {
-        maxHeight: 450,
+        maxHeight: 480,
         maxWidth: 400,
         margin: `${theme.spacing(1)}px auto`,
         padding: theme.spacing(1),
@@ -21,8 +21,9 @@ export default function SinglePost() {
     const classes = useStyles()
     const [post, setPost] = useState("")
     const [photo, setPhoto] = useState("")
+    const [redirect, setRedirect] = useState(false)
     const { postId } = useParams()
-    const posterId = post.postedBy ? `/user/${post.postedBy.id}` : ""
+    const posterId = post.postedBy ? post.postedBy.id : ""
     const posterName = post.postedBy ? post.postedBy.username : "Unknown"
 
     const fetchPost = () => {
@@ -61,6 +62,29 @@ export default function SinglePost() {
         })
     }
 
+    const confirmDelete = () => {
+        let answer = window.confirm("Are you sure you want to delete your post?")
+        if(answer) {
+            deletePost()
+        } 
+    }
+
+    const deletePost = () => {
+        axios({
+            method: 'delete',
+            url: `${process.env.REACT_APP_SERVER}/api/post/delete/${isAuthenticated().id}/${postId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            setRedirect(true)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
     useEffect(() => {
         fetchPost()
         fetchPhoto()
@@ -68,6 +92,7 @@ export default function SinglePost() {
 
     return (
         <div className={classes.root}>
+            {redirect ? <Redirect to='/' /> : null}
             <Typography variant="h6" component="h6" style={{ textAlign: 'center' }}>
                 {post.title}             
             </Typography>
@@ -86,15 +111,25 @@ export default function SinglePost() {
                         <br/>
                         <Typography variant="body2" color="textSecondary" component="p">
                             <Box fontStyle="italic">
-                                Posted by <Link to={posterId} >{posterName}</Link> on {new Date(post.created).toDateString()}
+                                Posted by <Link to={`/user/${posterId}`} >{posterName}</Link> on {new Date(post.created).toDateString()}
                             </Box>
                         </Typography>
                     </CardContent>
                 </CardActionArea>
                 <CardActions>
-                     <Button size="small" variant="contained" color="primary" to={`/`} component={Link}>
-                        Home
-                    </Button>
+                {isAuthenticated().id === posterId && (
+                    <>
+                        <Button size="small" variant="contained" color="primary" to={`/`} component={Link} style={{ marginRight: '3%' }}>
+                            Home
+                        </Button>
+                        <Button size="small" variant="contained" color="primary" href={`/post/edit/${isAuthenticated().id}/${postId}`}>
+                            Edit Post
+                        </Button>
+                        <Button size="small" variant="contained" color="secondary" onClick={confirmDelete} style={{ marginLeft: '3%' }}>
+                            Delete Post
+                        </Button>
+                    </>
+                    )}
                 </CardActions>
             </Card>
         </div>

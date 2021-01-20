@@ -10,6 +10,7 @@ import PrivateRoute from './auth/PrivateRoute'
 import FindPeople from './components/User/FindPeople'
 import NewPost from './components/Post/NewPost'
 import SinglePost from './components/Post/SinglePost'
+import EditPost from './components/Post/EditPost'
 
 export default function Main() {
     return (
@@ -23,6 +24,7 @@ export default function Main() {
                 <PrivateRoute exact path='/user/edit/:userId' component={EditProfile} />
                 <PrivateRoute exact path='/findpeople' component={FindPeople} />
                 <Route exact path='/users' component={Users} />
+                <PrivateRoute exact path='/post/edit/:userId/:postId' component={EditPost} />
                 <PrivateRoute exact path='/post/create' component={NewPost} />
                 <PrivateRoute exact path='/post/:postId' component={SinglePost} />
             </Switch>

@@ -58,7 +58,7 @@ export default function PostCard({ post }) {
                     component="img"
                     image={photo}
                     height="200px"
-                    width="auto"
+                    width="100%"
                     />
                     <CardContent>
                         <Typography variant="h6" component="h6" style={{ marginBottom: '5%' }}>

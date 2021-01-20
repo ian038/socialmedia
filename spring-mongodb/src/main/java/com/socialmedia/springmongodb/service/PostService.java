@@ -85,12 +85,19 @@ public class PostService {
         return new ResponseEntity<>(postedBy, HttpStatus.OK);
     }
 
-    public ResponseEntity<Object> updatePost(String userId, String postId, Post postRequest) {
+    public ResponseEntity<Object> updatePost(String userId, String postId, Post postRequest, MultipartFile file) {
         Post post = postRepository.findById(postId).orElseThrow(()->new SpringSocialMediaException("Post id :" + postId + " Not Found!"));
+        ObjectId photoId;
         HashMap<String, String> postedByInfo = new HashMap<String, String>();
         postedByInfo = post.getPostedBy();
         if(!userId.equals(postedByInfo.get("id"))) {
             return new ResponseEntity<>("Access denied", HttpStatus.FORBIDDEN);
+        }
+        try {
+            photoId = gridFsTemplate.store(file.getInputStream(), file.getName(), file.getContentType());
+            post.setPhoto(photoId.toString());
+        } catch (IOException e) {
+            return new ResponseEntity<>("Error " + e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         post.setTitle(postRequest.getTitle());
         post.setBody(postRequest.getBody());
