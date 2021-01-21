@@ -95,7 +95,7 @@ export default function FindPeopleCard({ person, toFollow, index }) {
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button size="small" color="primary" to={`/user/${person.id}`} component={Link}>
+                <Button size="small" color="primary" onClick={() => window.location.href=`/user/${person.id}`}>
                     View Profile
                 </Button>
                 <Button size="small" color="primary" component={Link} onClick={handleFollow}>

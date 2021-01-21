@@ -24,6 +24,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.socialmedia.springmongodb.dto.Photo;
+import com.socialmedia.springmongodb.model.Comment;
 import com.socialmedia.springmongodb.model.Post;
 import com.socialmedia.springmongodb.service.PostService;
 
@@ -78,5 +79,15 @@ public class PostController {
     @PutMapping("/unlike/{userId}/{postId}")
     public ResponseEntity<Object> unlike(@PathVariable("userId") String userId, @PathVariable("postId") String postId) {
         return postService.unlike(userId, postId);
+    }
+
+    @PutMapping("/comment/{userId}/{postId}")
+    public ResponseEntity<Object> comment(@PathVariable("userId") String userId, @PathVariable("postId") String postId, @Valid @RequestBody Comment comments) {
+        return postService.comment(userId, postId, comments);
+    }
+
+    @PutMapping("/uncomment/{commentId}/{postId}")
+    public ResponseEntity<Object> uncomment(@PathVariable("commentId") String commentId, @PathVariable("postId") String postId) {
+        return postService.uncomment(commentId, postId);
     }
 }

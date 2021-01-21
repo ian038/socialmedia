@@ -1,7 +1,6 @@
 import { useState, Fragment } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isAuthenticated, signout } from '../../auth'
-
 import { 
   Button,
   Tabs,
@@ -13,34 +12,7 @@ import {
   makeStyles
 } from '@material-ui/core'
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    })
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerPaper: {
-    width: 240,
-  },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1)
-  },
   title: {
     flexGrow: 1
   },
@@ -77,7 +49,7 @@ function Menu({ history }) {
             <Fragment>
                 <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="nav tabs example">
                   <Tab label="Home" to="/" component={Link} style={isActive(history, '/')} />
-                  <Tab label={`${isAuthenticated().username}'s profile`} to={`/user/${isAuthenticated().id}`} component={Link} style={isActive(history, `/user/${isAuthenticated().id}`)}  />
+                  <Tab label={`${isAuthenticated().username}'s profile`} onClick={() => window.location.href=`/user/${isAuthenticated().id}`} style={isActive(history, `/user/${isAuthenticated().id}`)}  />
                   <Tab label="Users" to="/users" component={Link} style={isActive(history, '/users')} />
                   <Tab label="Find People" to="/findpeople" component={Link} style={isActive(history, '/findpeople')}  />
                   <Tab label="Create Post" to="/post/create" component={Link} style={isActive(history, '/post/create')} />

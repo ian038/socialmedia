@@ -9,7 +9,7 @@ import Follower from './Follower'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      marginTop: theme.spacing(13),
+      marginTop: theme.spacing(3),
     },
     grid: {
         justifyContent: 'center'

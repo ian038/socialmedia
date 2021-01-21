@@ -5,10 +5,11 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Button, Card, CardContent, Typography, CardActions, CardMedia, Box } from '@material-ui/core'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 import { isAuthenticated } from '../../auth'
+import Comments from './Comments'
 
 const useStyles = makeStyles(theme => ({
     root: {
-        marginTop: theme.spacing(13),
+        marginTop: theme.spacing(3),
     },
     card: {
         height: "100%",
@@ -25,6 +26,7 @@ export default function SinglePost() {
     const [redirect, setRedirect] = useState(false)
     const [like, setLike] = useState(false)
     const [likes, setLikes] = useState(0)
+    const [comments, setComments] = useState([])
     const { postId } = useParams()
     const posterId = post.postedBy ? post.postedBy.id : ""
     const posterName = post.postedBy ? post.postedBy.username : "Unknown"
@@ -50,6 +52,7 @@ export default function SinglePost() {
             setPost(res.data)
             setLikes(res.data.likes.length)
             setLike(checkLike(res.data.likes))
+            setComments(res.data.comments)
         }).catch(error => {
             console.log(error)
         })
@@ -116,6 +119,10 @@ export default function SinglePost() {
         return callApi
     }
 
+    const updateComments = comments => {
+        setComments(comments)
+    }
+
     const deletePost = () => {
         axios({
             method: 'delete',
@@ -180,6 +187,7 @@ export default function SinglePost() {
                     </>
                     )}
                 </CardActions>
+                <Comments postId={postId} comments={comments} updateComments={updateComments} />
             </Card>
         </div>
     )

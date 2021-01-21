@@ -30,6 +30,8 @@ public class Post {
     private Date updated;
 
     private ArrayList<LikeUnlike> likes = new ArrayList<LikeUnlike>();
+
+    private ArrayList<Comment> comments = new ArrayList<Comment>();
   
     public Post() {
     }
@@ -68,11 +70,11 @@ public class Post {
 
     public HashMap<String, String> getPostedBy() {
       return postedBy;
-  }
+    }
 
-  public void setPostedBy(HashMap<String, String> postedBy) {
+    public void setPostedBy(HashMap<String, String> postedBy) {
       this.postedBy = postedBy;
-  }
+    }
 
     public Date getCreated() {
       return created;
@@ -100,5 +102,17 @@ public class Post {
 
     public void addLike(LikeUnlike like) {
       this.likes.add(like);
+    }
+
+    public ArrayList<Comment> getComments() {
+      return comments;
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+      this.comments = comments;
+    }
+
+    public void addComment(Comment comment) {
+      this.comments.add(comment);
     }
 }
