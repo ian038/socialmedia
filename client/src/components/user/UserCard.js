@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Card, CardContent, Typography, CardActionArea, CardActions, CardMedia, Grid } from '@material-ui/core'
+import { Button, Card, CardContent, Typography, CardActions, CardMedia, Grid } from '@material-ui/core'
 import { isAuthenticated } from '../../auth'
 
 const useStyles = makeStyles({
@@ -13,7 +13,9 @@ const useStyles = makeStyles({
         justifyContent: 'space-between'
     },
     card: {
-        maxHeight: 450
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
     }
 })
 
@@ -46,9 +48,8 @@ export default function UserCard({ user }) {
     }, [])
 
     return (
-        <Grid item xs={2}> 
+        <Grid item xs={12} sm={6} md={4}> 
             <Card variant="outlined" className={classes.card}>
-                <CardActionArea>
                     <CardMedia 
                     component="img"
                     image={photo}
@@ -62,7 +63,6 @@ export default function UserCard({ user }) {
                             {user.email}
                         </Typography>
                     </CardContent>
-                </CardActionArea>
                 <CardActions>
                      <Button size="small" color="primary" to={`/user/${user.id}`} component={Link}>
                         View Profile

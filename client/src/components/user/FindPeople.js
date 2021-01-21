@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Grid, Typography } from '@material-ui/core'
+import { Container, Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { isAuthenticated } from '../../auth'
 import FindPeopleCard from './FindPeopleCard'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      marginTop: theme.spacing(10)
+      marginTop: theme.spacing(3)
+    },
+    cardGrid: {
+        paddingTop: theme.spacing(3),
+        paddingBottom: theme.spacing(3)
     }
   }));
 
@@ -43,15 +47,17 @@ export default function FindPeople() {
 
     return (
         <div className={classes.root}>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" align="center">
                 Users
             </Typography>
-            <Grid container spacing={4} style={{ marginTop: '1%', marginLeft: '1%' }}>
-                {people ?
-                people.map((person, i) => {
-                    return <FindPeopleCard key={i} index={i} person={person} toFollow={i => toFollow(i)} />
-                }) : []}
-            </Grid>
+            <Container className={classes.cardGrid} maxWidth="md">
+                <Grid container spacing={4}>
+                    {people ?
+                    people.map((person, i) => {
+                        return <FindPeopleCard key={i} index={i} person={person} toFollow={i => toFollow(i)} />
+                    }) : []}
+                </Grid>
+            </Container>
         </div>
     )
 }

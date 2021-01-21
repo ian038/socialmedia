@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, Redirect, Link } from 'react-router-dom'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Card, CardContent, Typography, CardActionArea, CardActions, CardMedia, Box } from '@material-ui/core'
+import { Button, Card, CardContent, Typography, CardActions, CardMedia, Box } from '@material-ui/core'
+import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 import { isAuthenticated } from '../../auth'
 
 const useStyles = makeStyles(theme => ({
@@ -10,8 +11,8 @@ const useStyles = makeStyles(theme => ({
         marginTop: theme.spacing(13),
     },
     card: {
-        maxHeight: 480,
-        maxWidth: 400,
+        height: "100%",
+        maxWidth: 500,
         margin: `${theme.spacing(1)}px auto`,
         padding: theme.spacing(1),
     }
@@ -22,9 +23,19 @@ export default function SinglePost() {
     const [post, setPost] = useState("")
     const [photo, setPhoto] = useState("")
     const [redirect, setRedirect] = useState(false)
+    const [like, setLike] = useState(false)
+    const [likes, setLikes] = useState(0)
     const { postId } = useParams()
     const posterId = post.postedBy ? post.postedBy.id : ""
     const posterName = post.postedBy ? post.postedBy.username : "Unknown"
+
+    const checkLike = likes => {
+        let match
+        for(let like of likes) {
+            match = like.id === isAuthenticated().id
+        }
+        return match
+    }
 
     const fetchPost = () => {
         axios({
@@ -37,6 +48,8 @@ export default function SinglePost() {
             }
         }).then(res => {
             setPost(res.data)
+            setLikes(res.data.likes.length)
+            setLike(checkLike(res.data.likes))
         }).catch(error => {
             console.log(error)
         })
@@ -69,6 +82,40 @@ export default function SinglePost() {
         } 
     }
 
+    const likeToggle = async () => {
+        let callApi = like ? 
+        await axios({
+            method: 'put',
+            url: `${process.env.REACT_APP_SERVER}/api/post/unlike/${isAuthenticated().id}/${postId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            setLike(!like)
+            setLikes(res.data.likes.length)
+        }).catch(error => {
+            console.log(error)
+        }) 
+        :         
+        await axios({
+            method: 'put',
+            url: `${process.env.REACT_APP_SERVER}/api/post/like/${isAuthenticated().id}/${postId}`,
+            headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${isAuthenticated().token}`
+            }
+        }).then(res => {
+            setLike(!like)
+            setLikes(res.data.likes.length)
+        }).catch(error => {
+            console.log(error)
+        })
+        return callApi
+    }
+
     const deletePost = () => {
         axios({
             method: 'delete',
@@ -97,35 +144,37 @@ export default function SinglePost() {
                 {post.title}             
             </Typography>
             <Card variant="outlined" className={classes.card}>
-                <CardActionArea>
-                    <CardMedia 
-                    component="img"
-                    image={photo}
-                    height="300px"
-                    width="100%"
-                    />
-                    <CardContent>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                            {post.body}
-                        </Typography>
-                        <br/>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                            <Box fontStyle="italic">
-                                Posted by <Link to={`/user/${posterId}`} >{posterName}</Link> on {new Date(post.created).toDateString()}
-                            </Box>
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
+                <CardMedia 
+                component="img"
+                image={photo}
+                height="300px"
+                width="100%"
+                />
+                <CardContent>
+                    <h2 onClick={likeToggle} style={{ display: 'flex', alignItems: 'center' }}>
+                        <ThumbUpIcon style={{ marginRight: '1%' }} />
+                        {likes} likes
+                    </h2>
+                    <Typography variant="body2" color="textSecondary" component="p">
+                        {post.body}
+                    </Typography>
+                    <br/>
+                    <Typography variant="body2" color="textSecondary" component="p">
+                        <Box fontStyle="italic">
+                            Posted by <Link to={`/user/${posterId}`} >{posterName}</Link> on {new Date(post.created).toDateString()}
+                        </Box>
+                    </Typography>
+                </CardContent>
                 <CardActions>
                 {isAuthenticated().id === posterId && (
                     <>
-                        <Button size="small" variant="contained" color="primary" to={`/`} component={Link} style={{ marginRight: '3%' }}>
+                        <Button size="small" variant="contained" color="primary" to={`/`} component={Link}>
                             Home
                         </Button>
                         <Button size="small" variant="contained" color="primary" href={`/post/edit/${isAuthenticated().id}/${postId}`}>
                             Edit Post
                         </Button>
-                        <Button size="small" variant="contained" color="secondary" onClick={confirmDelete} style={{ marginLeft: '3%' }}>
+                        <Button size="small" variant="contained" color="secondary" onClick={confirmDelete}>
                             Delete Post
                         </Button>
                     </>

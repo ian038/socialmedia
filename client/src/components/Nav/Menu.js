@@ -9,6 +9,7 @@ import {
   AppBar, 
   Toolbar,
   Typography,
+  CssBaseline,
   makeStyles
 } from '@material-ui/core'
 
@@ -62,24 +63,13 @@ function Menu({ history }) {
   }
 
   return (
-    <div className={classes.root}>
+    <div>
+      <CssBaseline />
       <AppBar
-        position="fixed"
+        position="relative"
         id="header-color"
       >
         <Toolbar>
-          {/* {isAuthenticated() ? 
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawer}
-            edge="start"
-            className={clsx(classes.menuButton, open)}
-          >
-            <MenuIcon />
-          </IconButton>
-          : ''
-          } */}
           <Typography variant="h6" className={classes.title}>
               <Link style={{ textDecoration: 'none', color: 'white' }} to="/">Social Media App</Link>
           </Typography>
@@ -90,7 +80,7 @@ function Menu({ history }) {
                   <Tab label={`${isAuthenticated().username}'s profile`} to={`/user/${isAuthenticated().id}`} component={Link} style={isActive(history, `/user/${isAuthenticated().id}`)}  />
                   <Tab label="Users" to="/users" component={Link} style={isActive(history, '/users')} />
                   <Tab label="Find People" to="/findpeople" component={Link} style={isActive(history, '/findpeople')}  />
-                  <Tab label="Create Post" to="/post/create" component={Link} style={isActive(history, '/post/create')}  />
+                  <Tab label="Create Post" to="/post/create" component={Link} style={isActive(history, '/post/create')} />
                 </Tabs>
                 <Button variant="contained" color="secondary" className={classes.button} onClick={() => signout(() => { history.push('/') })}>
                     Sign Out
@@ -108,40 +98,6 @@ function Menu({ history }) {
             }
         </Toolbar>
       </AppBar>
-      {/* {isAuthenticated() ? 
-      <Drawer
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawer}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          <ListItem button>
-            <ListItemIcon><AccountCircleIcon /></ListItemIcon>
-            <ListItemText>
-                <Link className="drawer_links" to="/">Home</Link>
-            </ListItemText>
-          </ListItem>
-        </List>
-        <List>
-          <ListItem button>
-            <ListItemIcon><ExitToAppIcon /></ListItemIcon>
-            <ListItemText>
-                <Link className="drawer_links" to="/signout">Sign Out</Link>
-            </ListItemText>
-          </ListItem>
-        </List>
-      </Drawer>
-      : ''
-      } */}
     </div>
   );
 }

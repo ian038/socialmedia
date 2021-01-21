@@ -14,7 +14,9 @@ const useStyles = makeStyles({
         justifyContent: 'space-between'
     },
     card: {
-        maxHeight: 450
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
     }
 })
 
@@ -77,7 +79,7 @@ export default function FindPeopleCard({ person, toFollow, index }) {
     }, [])
 
     return (
-        <Grid item xs={2}> 
+        <Grid item xs={12} sm={6} md={4}> 
         {showFollowMessage()}
         <Card variant="outlined" className={classes.card}>
             <CardActionArea>
@@ -96,7 +98,7 @@ export default function FindPeopleCard({ person, toFollow, index }) {
                 <Button size="small" color="primary" to={`/user/${person.id}`} component={Link}>
                     View Profile
                 </Button>
-                <Button size="small" variant="contained" color="primary" component={Link} style={{ marginLeft: '32%' }} onClick={handleFollow}>
+                <Button size="small" color="primary" component={Link} onClick={handleFollow}>
                     Follow
                 </Button>
             </CardActions>

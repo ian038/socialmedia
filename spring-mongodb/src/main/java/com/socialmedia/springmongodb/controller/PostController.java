@@ -69,4 +69,14 @@ public class PostController {
     public ResponseEntity<String> deletePost(@PathVariable("userId") String userId, @PathVariable("postId") String postId) {
         return postService.deletePost(userId, postId);
     }
+
+    @PutMapping("/like/{userId}/{postId}")
+    public ResponseEntity<Object> like(@PathVariable("userId") String userId, @PathVariable("postId") String postId) {
+        return postService.like(userId, postId);
+    }
+
+    @PutMapping("/unlike/{userId}/{postId}")
+    public ResponseEntity<Object> unlike(@PathVariable("userId") String userId, @PathVariable("postId") String postId) {
+        return postService.unlike(userId, postId);
+    }
 }

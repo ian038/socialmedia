@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Grid, Typography } from '@material-ui/core'
+import { Container, Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { isAuthenticated } from '../../auth'
 import PostCard from './PostCard'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      marginTop: theme.spacing(10)
+      marginTop: theme.spacing(5)
+    },
+    cardGrid: {
+        paddingTop: theme.spacing(3),
+        paddingBottom: theme.spacing(3),
     }
   }));
 
@@ -37,15 +41,17 @@ export default function Posts() {
 
     return (
         <div className={classes.root}>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" align="center">
                 Recent Posts
             </Typography>
-            <Grid container spacing={4} style={{ marginTop: '1%', marginLeft: '1%' }}>
-                {posts ?
-                posts.map((post, i) => {
-                    return <PostCard key={i} post={post} />
-                }) : []}
-            </Grid>
+            <Container className={classes.cardGrid} maxWidth="md">
+                <Grid container spacing={4}>
+                    {posts ?
+                    posts.map((post, i) => {
+                        return <PostCard key={i} post={post} />
+                    }) : []}
+                </Grid>
+            </Container>
         </div>
     )
 }

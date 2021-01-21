@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.socialmedia.springmongodb.exception.SpringSocialMediaException;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.socialmedia.springmongodb.dto.LikeUnlike;
 import com.socialmedia.springmongodb.dto.Photo;
 import com.socialmedia.springmongodb.model.Post;
 import com.socialmedia.springmongodb.model.User;
@@ -68,6 +69,7 @@ public class PostService {
         _post.setBody(post.getBody());
         _post.setPostedBy(user);
         _post.setCreated(new Date());
+        _post.setLikes(_post.getLikes());
         postRepository.save(_post);
         return new ResponseEntity<>(_post, HttpStatus.CREATED);
     }
@@ -121,4 +123,24 @@ public class PostService {
         }
     }
 
+    public ResponseEntity<Object> like(String userId, String postId) {
+        Post post = postRepository.findById(postId).orElseThrow(()->new SpringSocialMediaException("Post id :" + postId + " Not Found!"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new SpringSocialMediaException("Following id: " + userId + " Not Found!"));
+        LikeUnlike like = new LikeUnlike();
+        like.setId(user.getId());
+        post.addLike(like);
+        postRepository.save(post);
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> unlike(String userId, String postId) {
+        Post post = postRepository.findById(postId).orElseThrow(()->new SpringSocialMediaException("Post id :" + postId + " Not Found!"));
+        for(int i = (post.getLikes().size() - 1); i >= 0; i--) {
+            if(post.getLikes().get(i).getId().equals(userId)) {
+                post.getLikes().remove(i);
+            }
+        }
+        postRepository.save(post);
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
 }

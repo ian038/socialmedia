@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Card, CardContent, Typography, CardActionArea, CardActions, CardMedia, Grid, Box } from '@material-ui/core'
+import { Button, Card, CardContent, Typography, CardActions, CardMedia, Grid, Box } from '@material-ui/core'
 import { isAuthenticated } from '../../auth'
 
 const useStyles = makeStyles(theme => ({
@@ -13,10 +13,9 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'space-between'
     },
     card: {
-        maxHeight: 450,
-        maxWidth: 400,
-        margin: `${theme.spacing(1)}px auto`,
-        padding: theme.spacing(1),
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
     }
 }))
 
@@ -51,9 +50,8 @@ export default function PostCard({ post }) {
     }, [])
 
     return (
-        <Grid item xs={3}> 
+        <Grid item xs={12} sm={6} md={4}> 
             <Card variant="outlined" className={classes.card}>
-                <CardActionArea>
                     <CardMedia 
                     component="img"
                     image={photo}
@@ -74,7 +72,6 @@ export default function PostCard({ post }) {
                             </Box>
                         </Typography>
                     </CardContent>
-                </CardActionArea>
                 <CardActions>
                      <Button size="small" variant="contained" color="primary" to={`/post/${post.id}`} component={Link}>
                         Read More

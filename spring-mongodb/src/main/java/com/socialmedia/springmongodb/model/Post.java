@@ -4,6 +4,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.*;
 
+import com.socialmedia.springmongodb.dto.LikeUnlike;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -25,6 +28,8 @@ public class Post {
     private Date created;
 
     private Date updated;
+
+    private ArrayList<LikeUnlike> likes = new ArrayList<LikeUnlike>();
   
     public Post() {
     }
@@ -83,5 +88,17 @@ public class Post {
   
     public void setUpdated(Date updated) {
       this.updated = updated;
+    }
+
+    public ArrayList<LikeUnlike> getLikes() {
+      return likes;
+    }
+
+    public void setLikes(ArrayList<LikeUnlike> likes) {
+      this.likes = likes;
+    }
+
+    public void addLike(LikeUnlike like) {
+      this.likes.add(like);
     }
 }
