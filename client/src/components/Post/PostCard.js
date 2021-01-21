@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 import axios from 'axios'
-import { makeStyles } from '@material-ui/core/styles';
-import { Button, Card, CardContent, Typography, CardActions, CardMedia, Grid } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { Button, Card, CardContent, Typography, CardActions, CardMedia, Grid, Box } from '@material-ui/core'
 import { isAuthenticated } from '../../auth'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1
     },
@@ -15,18 +15,20 @@ const useStyles = makeStyles({
     card: {
         height: '100%',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
     }
-})
+}))
 
-export default function UserCard({ user }) {
+export default function PostCard({ post }) {
     const classes = useStyles()
     const[photo, setPhoto] = useState("")
+    const posterId = post.postedBy ? `/user/${post.postedBy.id}` : ""
+    const posterName = post.postedBy ? post.postedBy.username : "Unknown"
     
     const fetchPhoto = id => {
         axios({
             method: 'get',
-            url: `${process.env.REACT_APP_SERVER}/api/user/photo/${id}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/photo/${id}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",
@@ -38,13 +40,13 @@ export default function UserCard({ user }) {
         }).catch(error => {
             // if photo does not exist, set default photo
             if(error) {
-                setPhoto("https://cdn2.iconfinder.com/data/icons/teen-people-face-avatar-6/500/teen_109-512.png")
+                setPhoto("https://www.flickr.com/photos/glaciernps/28806955114/in/album-72157670140016374/")
             }
         })
     }
 
     useEffect(() => {
-        fetchPhoto(user.id)
+        fetchPhoto(post.id)
     }, [])
 
     return (
@@ -53,19 +55,26 @@ export default function UserCard({ user }) {
                     <CardMedia 
                     component="img"
                     image={photo}
-                    height="250"
+                    height="200px"
+                    width="100%"
                     />
                     <CardContent>
-                        <Typography variant="h6" component="h6">
-                            {user.username}             
+                        <Typography variant="h6" component="h6" style={{ marginBottom: '5%' }}>
+                            {post.title}             
                         </Typography>
                         <Typography variant="body2" color="textSecondary" component="p">
-                            {user.email}
+                            {post.body.substring(0, 25)}
+                        </Typography>
+                        <br/>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            <Box fontStyle="italic">
+                                Posted by <Link to={posterId} >{posterName}</Link> on {new Date(post.created).toDateString()}
+                            </Box>
                         </Typography>
                     </CardContent>
                 <CardActions>
-                     <Button size="small" color="primary" to={`/user/${user.id}`} component={Link}>
-                        View Profile
+                     <Button size="small" variant="contained" color="primary" to={`/post/${post.id}`} component={Link}>
+                        Read More
                     </Button>
                 </CardActions>
             </Card>

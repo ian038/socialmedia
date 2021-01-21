@@ -3,6 +3,7 @@ package com.socialmedia.springmongodb.config;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,8 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         httpSecurity.csrf().disable()
                     .authorizeRequests()
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .antMatchers("/api/auth/**")
-                    .permitAll()
+                    .antMatchers("/api/auth/**").permitAll()
                     .anyRequest()
                     .authenticated();
         httpSecurity.addFilterBefore(jwtAuthFiler, UsernamePasswordAuthenticationFilter.class);

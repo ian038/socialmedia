@@ -3,8 +3,10 @@ package com.socialmedia.springmongodb.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.*;
-import org.bson.types.Binary;
 
+import com.socialmedia.springmongodb.dto.LikeUnlike;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -19,13 +21,15 @@ public class Post {
     @Size(min = 4, max = 2000, message = "Post body should have at least 4 characters and should not be more than 2000 characters long")
     private String body;
 
-    private Binary photo;
+    private String photo;
 
     private HashMap<String, String> postedBy = new HashMap<String, String>(); 
 
     private Date created;
 
     private Date updated;
+
+    private ArrayList<LikeUnlike> likes = new ArrayList<LikeUnlike>();
   
     public Post() {
     }
@@ -54,11 +58,11 @@ public class Post {
       this.body = body;
     }
 
-    public Binary getPhoto() {
+    public String getPhoto() {
       return photo;
     }
 
-    public void setPhoto(Binary photo) {
+    public void setPhoto(String photo) {
       this.photo = photo;
     }
 
@@ -84,5 +88,17 @@ public class Post {
   
     public void setUpdated(Date updated) {
       this.updated = updated;
+    }
+
+    public ArrayList<LikeUnlike> getLikes() {
+      return likes;
+    }
+
+    public void setLikes(ArrayList<LikeUnlike> likes) {
+      this.likes = likes;
+    }
+
+    public void addLike(LikeUnlike like) {
+      this.likes.add(like);
     }
 }

@@ -3,58 +3,52 @@ import axios from 'axios'
 import { Container, Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { isAuthenticated } from '../../auth'
-import FindPeopleCard from './FindPeopleCard'
+import PostCard from './PostCard'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      marginTop: theme.spacing(3)
+      marginTop: theme.spacing(5)
     },
     cardGrid: {
         paddingTop: theme.spacing(3),
-        paddingBottom: theme.spacing(3)
+        paddingBottom: theme.spacing(3),
     }
   }));
 
-export default function FindPeople() {
+export default function Posts() {
     const classes = useStyles()
-    const [people, setPeople] = useState([])
+    const [posts, setPosts] = useState([])
 
-    const findPeople = () => {
+    const fetchPosts = () => {
         axios({
             method: 'get',
-            url: `${process.env.REACT_APP_SERVER}/api/user/findpeople/${isAuthenticated().id}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${isAuthenticated().token}`
             }
         }).then(res => {
-            setPeople(res.data)
+            setPosts(res.data)
         }).catch(error => {
             console.log(error)
         })
     }
 
-    const toFollow = i => {
-        let follow = people
-        people.splice(i, 1)
-        setPeople(follow)
-    }
-
     useEffect(() => {
-        findPeople()
-    }, [setPeople])
+        fetchPosts()
+    }, [setPosts])
 
     return (
         <div className={classes.root}>
             <Typography component="h1" variant="h5" align="center">
-                Users
+                Recent Posts
             </Typography>
             <Container className={classes.cardGrid} maxWidth="md">
                 <Grid container spacing={4}>
-                    {people ?
-                    people.map((person, i) => {
-                        return <FindPeopleCard key={i} index={i} person={person} toFollow={i => toFollow(i)} />
+                    {posts ?
+                    posts.map((post, i) => {
+                        return <PostCard key={i} post={post} />
                     }) : []}
                 </Grid>
             </Container>

@@ -1,6 +1,5 @@
 package com.socialmedia.springmongodb.dto;
 
-
 public class Follow {
     private String id;
     private String username;

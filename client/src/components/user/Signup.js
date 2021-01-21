@@ -7,7 +7,7 @@ import { signup } from '../../auth'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-      marginTop: theme.spacing(8),
+      marginTop: theme.spacing(5),
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -49,7 +49,6 @@ export default function Signup() {
         signup(user).then(res => {
             setValues({ ...values, username: '', email: '', password: '', error: '', success: true })
         }).catch(error => {
-            console.log(error.response)
             setValues({ ...values, error: error.response.data.details, success: false })
         })
     }
