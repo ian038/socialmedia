@@ -26,7 +26,7 @@ export default function UserCard({ user }) {
     const fetchPhoto = id => {
         axios({
             method: 'get',
-            url: `${process.env.REACT_APP_SERVER}/api/user/photo/${id}`,
+            url: `/api/user/photo/${id}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",

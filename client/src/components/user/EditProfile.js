@@ -42,7 +42,7 @@ export default function EditProfile() {
     const fetchUser = () => {
         axios({
             method: 'get',
-            url: `${process.env.REACT_APP_SERVER}/api/user/${userId}`,
+            url: `/api/user/${userId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export default function EditProfile() {
     const fetchPhoto = () => {
         axios({
             method: 'get',
-            url: `${process.env.REACT_APP_SERVER}/api/user/photo/${userId}`,
+            url: `/api/user/photo/${userId}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",
@@ -84,7 +84,7 @@ export default function EditProfile() {
     const updateUser = user => {
         return axios({
             method: 'put',
-            url: `${process.env.REACT_APP_SERVER}/api/user/update/${userId}`,
+            url: `/api/user/update/${userId}`,
             headers: {
                 Accept: "*/*",
                 Authorization: `Bearer ${isAuthenticated().token}`

@@ -22,7 +22,7 @@ export default function FindPeople() {
     const findPeople = () => {
         axios({
             method: 'get',
-            url: `${process.env.REACT_APP_SERVER}/api/user/findpeople/${isAuthenticated().id}`,
+            url: `/api/user/findpeople/${isAuthenticated().id}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",

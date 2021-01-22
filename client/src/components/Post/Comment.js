@@ -11,7 +11,7 @@ export default function Comment({ comment, comments, updateComments }) {
     const fetchPhoto = id => {
         axios({
             method: 'get',
-            url: `${process.env.REACT_APP_SERVER}/api/user/photo/${id}`,
+            url: `/api/user/photo/${id}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",
@@ -42,7 +42,7 @@ export default function Comment({ comment, comments, updateComments }) {
     const deleteComment = () => {
         axios({
             method: 'put',
-            url: `${process.env.REACT_APP_SERVER}/api/post/uncomment/${comment.id}/${postId}`,
+            url: `/api/post/uncomment/${comment.id}/${postId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
