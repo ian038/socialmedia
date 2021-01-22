@@ -124,15 +124,11 @@ public class AuthService {
         resetToken.setToken(UUID.randomUUID().toString());
         resetToken.setExpiryDate(new Date());
         tokenRepository.save(resetToken);
-        HashMap<String, String> token = new HashMap<String, String>();
-        token.put("id", resetToken.getId());
-        token.put("token", resetToken.getToken());
-        token.put("Expiry Date", resetToken.getExpiryDate().toString());
 
-        user.setPasswordResetToken(token); 
+        user.setPasswordResetToken(resetToken.getToken());
+        userRepository.save(user);
         try {
-            final String appUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-            final SimpleMailMessage email = constructResetTokenEmail(appUrl, resetToken.getToken(), user);
+            SimpleMailMessage email = constructResetTokenEmail(resetToken.getToken(), user);
             mailSender.send(email);
         } catch (MailAuthenticationException e) {
             return new ResponseEntity<>("Error " + e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -142,13 +138,23 @@ public class AuthService {
         return new ResponseEntity<>("A password reset email has been sent to you! Please check your email.", HttpStatus.OK);
     }
 
+    public ResponseEntity<String> resetPassword(String userId, String token, String newPassword) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new SpringSocialMediaException("User id: " + userId + " Not Found!"));
+        if(!user.getPasswordResetToken().equals(token)) {
+            return new ResponseEntity<>("Error! Please sign up.", HttpStatus.OK);
+        }
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return new ResponseEntity<>("Success! Password has been reset.", HttpStatus.OK);
+    }
+
     // NON-API
-    private SimpleMailMessage constructResetTokenEmail(final String contextPath, final String token, final User user) {
-        final String url = contextPath + "/user/changepassword/" + user.getId() + "/" + token;
+    private SimpleMailMessage constructResetTokenEmail(final String token, final User user) {
+        final String url = "http://localhost:3000/resetpassword/" + user.getId() + "/" + token;
         final SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(user.getEmail());
         email.setSubject("Reset Password");
-        email.setText("Reset Password" + " \r\n" + url);
+        email.setText("Please click on the link to reset your password" + " \r\n" + url);
         email.setFrom("noreply@socialmediaapp.com");
         return email;
     }

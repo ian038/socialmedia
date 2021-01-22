@@ -39,7 +39,7 @@ public class User {
 
     private ArrayList<Follow> following = new ArrayList<Follow>();
 
-    private HashMap<String, String> passwordResetToken = new HashMap<String, String>(); 
+    private String passwordResetToken; 
 
     public User() {
     }
@@ -138,11 +138,11 @@ public class User {
       this.following.add(follow);
     }
 
-    public HashMap<String, String> getPasswordResetToken() {
+    public String getPasswordResetToken() {
       return passwordResetToken;
     }
 
-    public void setPasswordResetToken(HashMap<String, String> passwordResetToken) {
+    public void setPasswordResetToken(String passwordResetToken) {
       this.passwordResetToken = passwordResetToken;
     }
 }

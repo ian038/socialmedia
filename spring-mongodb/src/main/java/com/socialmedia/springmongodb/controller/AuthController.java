@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,5 +44,10 @@ public class AuthController {
     @PostMapping("/forgotpassword")
     public ResponseEntity<String> forgotPassword(HttpServletRequest request, @Valid @RequestBody String userEmail) {
         return authService.forgotPassword(request, userEmail);
+    }
+
+    @PutMapping("/resetpassword/{userId}/{token}")
+    public ResponseEntity<String> resetPassword(@PathVariable("userId") String userId, @PathVariable("token") String token, @Valid @RequestBody String newPassword) {
+        return authService.resetPassword(userId, token, newPassword);
     }
 }

@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { forgotPassword } from '../../auth'
-import { TextField, Container, Button, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { useParams } from 'react-router-dom'
+import { Button, TextField, Link, Typography, Container } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
+import { makeStyles } from '@material-ui/core/styles'
+import { resetPassword } from '../../auth'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -20,25 +21,29 @@ const useStyles = makeStyles((theme) => ({
     },
   }))
 
-export default function ForgotPassword() {
+export default function ResetPassword() {
     const classes = useStyles()
     const [values, setValues] = useState({
-        email: '',
+        password: '',
         message: '',
         success: false,
         error: ''
     })
-    const { email, message, success, error } = values
+    const { userId, token } = useParams()
+    const { password, message, success, error } = values
 
     const handleChange = e => {
-        setValues({ ...values, success: false, email: e.target.value })
+        setValues({ ...values, success: false, password: e.target.value })
     }
 
     const handleSubmit = e => {
         e.preventDefault()
-        forgotPassword(email).then(res => {
+        const resetInfo = { userId, token, password }
+        resetPassword(resetInfo).then(res => {
+            console.log(res.data)
             setValues({ ...values, message: res.data, success: true, error: false })
         }).catch(error => {
+            console.log(error.response)
             setValues({ ...values, success: false, error: error.response.data })
         })
     }
@@ -51,7 +56,7 @@ export default function ForgotPassword() {
 
     const showSuccess = () => (
         <Alert severity="success" style={{ display: success ? '' : 'none' }}>
-            {message}
+            {message} Please <Link href="/signin" variant="body2" >Sign In</Link>
         </Alert>
     )
 
@@ -61,7 +66,7 @@ export default function ForgotPassword() {
             {showError()}
             {showSuccess()}
             <Typography component="h1" variant="h5">
-                Forgot Password?
+                Reset Password
             </Typography>
             <form onSubmit={handleSubmit} className={classes.form} noValidate>
                 <TextField
@@ -69,10 +74,11 @@ export default function ForgotPassword() {
                 margin="normal"
                 required
                 fullWidth
-                label="Email"
-                autoComplete="email"
+                label="Password"
+                type="password"
+                autoComplete="current-password"
                 onChange={handleChange}
-                value={email}
+                value={password}
                 />
                 <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} onClick={handleSubmit}>
                     Submit

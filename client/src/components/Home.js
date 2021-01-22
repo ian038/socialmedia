@@ -17,11 +17,12 @@ export default function Home() {
     <div className={classes.root}>
       <Container maxWidth="sm">
         <Typography component="h1" variant="h5" align="center" color="textPrimary" gutterBottom>
-          Welcome to React Frontend
+          Welcome to Social Media App
         </Typography>
         <Typography variant="h5" align="center" color="textSecondary" paragraph>
           Make new connections with people around the world!
           See how your friends and family are doing.
+          Share different views on various topics without censorship!
         </Typography>
       </Container>
       { isAuthenticated() ? 

@@ -81,3 +81,14 @@ export const forgotPassword = email => {
     }) 
 }
 
+export const resetPassword = resetInfo => {
+    return axios({
+        method: 'put',
+        url: `${process.env.REACT_APP_SERVER}/api/auth/resetpassword/${resetInfo.userId}/${resetInfo.token}`,
+        headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+        },
+        data: resetInfo.password
+    }) 
+}
