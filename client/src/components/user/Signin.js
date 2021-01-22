@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { 
     Avatar,
     Button,
     TextField,
-    Link, 
     Grid,
     Typography,
     Container,
@@ -115,9 +114,18 @@ export default function SignIn() {
         >
           Sign In
         </Button>
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          to="/forgot-password"
+          component={Link}
+        >
+        Forgot Password
+        </Button>
         <Grid container>
           <Grid item>
-            <Link href="/signup" variant="body2">
+            <Link to="/signup" variant="body2">
               {"Don't have an account? Sign Up"}
             </Link>
           </Grid>

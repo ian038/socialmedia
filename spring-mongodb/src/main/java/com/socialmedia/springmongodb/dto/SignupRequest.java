@@ -8,7 +8,6 @@ public class SignupRequest {
     private String username;
 
     @NotNull(message = "Email cannot be empty")
-    
     @Pattern(regexp = "^[_A-Za-z0-9-+]+(.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(.[A-Za-z0-9]+)*(.[A-Za-z]{2,})$", message = "Email must be valid")
     private String email;
 

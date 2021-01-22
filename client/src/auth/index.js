@@ -69,3 +69,15 @@ export const isAuthenticated = () => {
     }
 }
 
+export const forgotPassword = email => {
+    return axios({
+        method: 'post',
+        url: `${process.env.REACT_APP_SERVER}/api/auth/forgotpassword`,
+        headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+        },
+        data: email
+    }) 
+}
+

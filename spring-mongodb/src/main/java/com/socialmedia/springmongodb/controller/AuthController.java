@@ -38,4 +38,9 @@ public class AuthController {
     public ResponseEntity<String> signOut(HttpServletRequest request, HttpServletResponse response) {
         return authService.signOut(request, response);
     }
+
+    @PostMapping("/forgotpassword")
+    public ResponseEntity<String> forgotPassword(HttpServletRequest request, @Valid @RequestBody String userEmail) {
+        return authService.forgotPassword(request, userEmail);
+    }
 }

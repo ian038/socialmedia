@@ -23,10 +23,10 @@ const useStyles = makeStyles((theme) => ({
     submit: {
       margin: theme.spacing(3, 0, 2),
     },
-  }));
+  }))
   
 export default function Signup() {
-    const classes = useStyles();
+    const classes = useStyles()
     const [values, setValues] = useState({
         username: '',
         email: '',
@@ -59,7 +59,7 @@ export default function Signup() {
         </Alert>
     )
 
-    const showLoading = () => (
+    const showSuccess = () => (
         <Alert severity="success" style={{ display: success ? '' : 'none' }}>
             Success! User created. Please <Link href="/signin" variant="body2" >Sign In</Link>
         </Alert>
@@ -123,7 +123,7 @@ export default function Signup() {
         <Container maxWidth="xs">
         <div className={classes.paper}>
             {showError()}
-            {showLoading()}
+            {showSuccess()}
             <Avatar className={classes.avatar}>
                 <LockOutlinedIcon />
             </Avatar>

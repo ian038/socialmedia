@@ -9,6 +9,7 @@ import com.socialmedia.springmongodb.dto.Follow;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 @Document(collection = "users")
 public class User {
@@ -37,6 +38,8 @@ public class User {
     private ArrayList<Follow> followers = new ArrayList<Follow>();
 
     private ArrayList<Follow> following = new ArrayList<Follow>();
+
+    private HashMap<String, String> passwordResetToken = new HashMap<String, String>(); 
 
     public User() {
     }
@@ -133,5 +136,13 @@ public class User {
 
     public void addFollowing(Follow follow) {
       this.following.add(follow);
+    }
+
+    public HashMap<String, String> getPasswordResetToken() {
+      return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(HashMap<String, String> passwordResetToken) {
+      this.passwordResetToken = passwordResetToken;
     }
 }
