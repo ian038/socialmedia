@@ -64,7 +64,7 @@ export default function UserCard({ user }) {
                         </Typography>
                     </CardContent>
                 <CardActions>
-                     <Button size="small" color="primary" to={`/user/${user.id}`} component={Link}>
+                     <Button size="small" color="primary" onClick={() => window.location.href=`/user/${user.id}`}>
                         View Profile
                     </Button>
                 </CardActions>

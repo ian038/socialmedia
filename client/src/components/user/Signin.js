@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { 
     Avatar,
     Button,
     TextField,
-    Link, 
     Grid,
     Typography,
     Container,
@@ -31,8 +30,8 @@ const useStyles = makeStyles((theme) => ({
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
+  button: {
+    margin: theme.spacing(2, 0, 2),
   },
 }));
 
@@ -110,14 +109,24 @@ export default function SignIn() {
           fullWidth
           variant="contained"
           color="primary"
-          className={classes.submit}
+          className={classes.button}
           onClick={handleSubmit}
         >
           Sign In
         </Button>
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          to="/forgot-password"
+          className={classes.button}
+          component={Link}
+        >
+        Forgot Password
+        </Button>
         <Grid container>
           <Grid item>
-            <Link href="/signup" variant="body2">
+            <Link to="/signup" variant="body2">
               {"Don't have an account? Sign Up"}
             </Link>
           </Grid>

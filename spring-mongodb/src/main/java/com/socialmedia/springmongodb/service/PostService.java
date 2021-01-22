@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
 
+import com.socialmedia.springmongodb.repository.CommentRepository;
 import com.socialmedia.springmongodb.repository.PostRepository;
 
 import org.bson.types.ObjectId;
@@ -22,6 +23,7 @@ import com.socialmedia.springmongodb.exception.SpringSocialMediaException;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.socialmedia.springmongodb.dto.LikeUnlike;
 import com.socialmedia.springmongodb.dto.Photo;
+import com.socialmedia.springmongodb.model.Comment;
 import com.socialmedia.springmongodb.model.Post;
 import com.socialmedia.springmongodb.model.User;
 import com.socialmedia.springmongodb.repository.UserRepository;
@@ -33,6 +35,9 @@ public class PostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Autowired
     private GridFsTemplate gridFsTemplate;
@@ -70,6 +75,7 @@ public class PostService {
         _post.setPostedBy(user);
         _post.setCreated(new Date());
         _post.setLikes(_post.getLikes());
+        _post.setComments(_post.getComments());
         postRepository.save(_post);
         return new ResponseEntity<>(_post, HttpStatus.CREATED);
     }
@@ -125,7 +131,7 @@ public class PostService {
 
     public ResponseEntity<Object> like(String userId, String postId) {
         Post post = postRepository.findById(postId).orElseThrow(()->new SpringSocialMediaException("Post id :" + postId + " Not Found!"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new SpringSocialMediaException("Following id: " + userId + " Not Found!"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new SpringSocialMediaException("User id: " + userId + " Not Found!"));
         LikeUnlike like = new LikeUnlike();
         like.setId(user.getId());
         post.addLike(like);
@@ -138,6 +144,36 @@ public class PostService {
         for(int i = (post.getLikes().size() - 1); i >= 0; i--) {
             if(post.getLikes().get(i).getId().equals(userId)) {
                 post.getLikes().remove(i);
+            }
+        }
+        postRepository.save(post);
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> comment(String userId, String postId, Comment comment) {
+        Post post = postRepository.findById(postId).orElseThrow(()->new SpringSocialMediaException("Post id :" + postId + " Not Found!"));
+        User userInfo = userRepository.findById(userId).orElseThrow(() -> new SpringSocialMediaException("User id: " + userId + " Not Found!"));
+        HashMap<String, String> user = new HashMap<String, String>();
+        user.put("id", userInfo.getId());
+        user.put("username", userInfo.getUsername());
+
+        Comment _comment = new Comment();
+        _comment.setText(comment.getText());
+        _comment.setPostedBy(user);
+        _comment.setCreated(new Date());
+        commentRepository.save(_comment);
+
+        post.addComment(_comment);
+        postRepository.save(post);
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> uncomment(String commentId, String postId) {
+        Post post = postRepository.findById(postId).orElseThrow(()->new SpringSocialMediaException("Post id :" + postId + " Not Found!"));
+        for(int i = (post.getComments().size() - 1); i >= 0; i--) {
+            if(post.getComments().get(i).getId().equals(commentId)) {
+                commentRepository.deleteById(post.getComments().get(i).getId());
+                post.getComments().remove(i);
             }
         }
         postRepository.save(post);

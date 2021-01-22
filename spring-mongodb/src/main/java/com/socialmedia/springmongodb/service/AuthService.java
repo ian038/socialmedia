@@ -2,10 +2,14 @@ package com.socialmedia.springmongodb.service;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
+import java.util.Locale;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.MessageSource;
 import com.socialmedia.springmongodb.Auth.JwtProvider;
 import com.socialmedia.springmongodb.dto.AuthResponse;
 import com.socialmedia.springmongodb.dto.ErrorResponse;
@@ -14,6 +18,7 @@ import com.socialmedia.springmongodb.dto.SigninRequest;
 import com.socialmedia.springmongodb.dto.SignupRequest;
 import com.socialmedia.springmongodb.exception.SpringSocialMediaException;
 import com.socialmedia.springmongodb.model.User;
+import com.socialmedia.springmongodb.repository.TokenRepository;
 import com.socialmedia.springmongodb.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +33,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.mail.MailAuthenticationException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+
+import com.socialmedia.springmongodb.model.PasswordResetToken;
 
 import lombok.AllArgsConstructor;
 
@@ -40,6 +50,15 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
+    private MessageSource messages;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -94,5 +113,49 @@ public class AuthService {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         return new ResponseEntity<>("Signout success!", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> forgotPassword(HttpServletRequest request, String userEmail) {
+        User user = userRepository.findByEmail(userEmail);
+        if(user == null) {
+            return new ResponseEntity<>("User email does not exist. Please sign up.", HttpStatus.FORBIDDEN);
+        }
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(UUID.randomUUID().toString());
+        resetToken.setExpiryDate(new Date());
+        tokenRepository.save(resetToken);
+
+        user.setPasswordResetToken(resetToken.getToken());
+        userRepository.save(user);
+        try {
+            SimpleMailMessage email = constructResetTokenEmail(resetToken.getToken(), user);
+            mailSender.send(email);
+        } catch (MailAuthenticationException e) {
+            return new ResponseEntity<>("Error " + e, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error " + e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>("A password reset email has been sent to you! Please check your email.", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> resetPassword(String userId, String token, String newPassword) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new SpringSocialMediaException("User id: " + userId + " Not Found!"));
+        if(!user.getPasswordResetToken().equals(token)) {
+            return new ResponseEntity<>("Error! Please sign up.", HttpStatus.OK);
+        }
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return new ResponseEntity<>("Success! Password has been reset.", HttpStatus.OK);
+    }
+
+    // NON-API
+    private SimpleMailMessage constructResetTokenEmail(final String token, final User user) {
+        final String url = "http://localhost:3000/resetpassword/" + user.getId() + "/" + token;
+        final SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(user.getEmail());
+        email.setSubject("Reset Password");
+        email.setText("Please click on the link to reset your password" + " \r\n" + url);
+        email.setFrom("noreply@socialmediaapp.com");
+        return email;
     }
 }

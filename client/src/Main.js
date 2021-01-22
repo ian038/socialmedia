@@ -11,6 +11,8 @@ import FindPeople from './components/User/FindPeople'
 import NewPost from './components/Post/NewPost'
 import SinglePost from './components/Post/SinglePost'
 import EditPost from './components/Post/EditPost'
+import ForgotPassword from './components/User/ForgotPassword'
+import ResetPassword from './components/User/ResetPassword'
 
 export default function Main() {
     return (
@@ -18,6 +20,8 @@ export default function Main() {
             <Menu />
             <Switch>
                 <Route exact path='/' component={Home} />
+                <Route exact path='/forgot-password' component={ForgotPassword} />
+                <Route exact path='/resetpassword/:userId/:token' component={ResetPassword} />
                 <Route exact path='/signup' component={Signup} />
                 <Route exact path='/signin' component={Signin} />
                 <PrivateRoute exact path='/user/:userId' component={Profile} />
