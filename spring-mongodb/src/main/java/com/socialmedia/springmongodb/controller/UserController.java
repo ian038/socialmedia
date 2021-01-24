@@ -25,7 +25,7 @@ import com.socialmedia.springmongodb.dto.Photo;
 import com.socialmedia.springmongodb.dto.UserUpdateRequest;
 import com.socialmedia.springmongodb.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000/", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
