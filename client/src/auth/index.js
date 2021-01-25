@@ -28,6 +28,9 @@ export const signin = user => {
 export const signout = next => {
     if(typeof window !== 'undefined') {
         localStorage.removeItem('jwt')
+        localStorage.removeItem('userid')
+        localStorage.removeItem('username')
+        localStorage.removeItem('useremail')
         next()
         return axios.get(`${process.env.REACT_APP_SERVER}/api/auth/signout`)
         .then(res => {
