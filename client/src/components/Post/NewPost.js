@@ -37,7 +37,7 @@ export default function NewPost() {
     const createPost = post => {
         return axios({
             method: 'post',
-            url: `/api/post/new/${isAuthenticated().id}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/new/${isAuthenticated().id}`,
             headers: {
                 Accept: "*/*",
                 Authorization: `Bearer ${isAuthenticated().token}`

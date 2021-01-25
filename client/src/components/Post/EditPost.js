@@ -39,7 +39,7 @@ export default function EditPost() {
     const fetchPost = () => {
         axios({
             method: 'get',
-            url: `/api/post/${postId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/${postId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
@@ -60,7 +60,7 @@ export default function EditPost() {
     const fetchPhoto = () => {
         axios({
             method: 'get',
-            url: `/api/post/photo/${postId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/photo/${postId}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",
@@ -77,7 +77,7 @@ export default function EditPost() {
     const updatePost = post => {
         return axios({
             method: 'put',
-            url: `/api/post/update/${isAuthenticated().id}/${postId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/update/${isAuthenticated().id}/${postId}`,
             headers: {
                 Accept: "*/*",
                 Authorization: `Bearer ${isAuthenticated().token}`

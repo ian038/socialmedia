@@ -36,7 +36,7 @@ export default function Profile() {
     const fetchUser = () => {
         axios({
             method: 'get',
-            url: `/api/user/${userId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/user/${userId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export default function Profile() {
     const fetchPhoto = () => {
         axios({
             method: 'get',
-            url: `/api/user/photo/${userId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/user/photo/${userId}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",
@@ -75,7 +75,7 @@ export default function Profile() {
     const fetchPostByUser = () => {
         axios({
             method: 'get',
-            url: `/api/post/by/${userId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/by/${userId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
@@ -97,7 +97,7 @@ export default function Profile() {
     const deleteAccount = () => {
         axios({
             method: 'delete',
-            url: `/api/user/delete/${userId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/user/delete/${userId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
@@ -121,7 +121,7 @@ export default function Profile() {
     const handleFollow = () => {
         axios({
             method: 'put',
-            url: `/api/user/follow/${isAuthenticated().id}/${userId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/user/follow/${isAuthenticated().id}/${userId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
@@ -137,7 +137,7 @@ export default function Profile() {
     const handleUnfollow = () => {
         axios({
             method: 'put',
-            url: `/api/user/unfollow/${isAuthenticated().id}/${userId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/user/unfollow/${isAuthenticated().id}/${userId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",

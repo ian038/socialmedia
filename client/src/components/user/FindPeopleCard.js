@@ -29,7 +29,7 @@ export default function FindPeopleCard({ person, toFollow, index }) {
     const fetchPhoto = id => {
         axios({
             method: 'get',
-            url: `/api/user/photo/${id}`,
+            url: `${process.env.REACT_APP_SERVER}/api/user/photo/${id}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",
@@ -49,7 +49,7 @@ export default function FindPeopleCard({ person, toFollow, index }) {
     const handleFollow = () => {
         axios({
             method: 'put',
-            url: `/api/user/follow/${isAuthenticated().id}/${person.id}`,
+            url: `${process.env.REACT_APP_SERVER}/api/user/follow/${isAuthenticated().id}/${person.id}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",

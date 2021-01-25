@@ -22,7 +22,7 @@ export default function Posts() {
     const fetchPosts = () => {
         axios({
             method: 'get',
-            url: `/api/post/`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",

@@ -22,7 +22,7 @@ export default function Users() {
     const fetchUsers = () => {
         axios({
             method: 'get',
-            url: `/api/user/`,
+            url: `${process.env.REACT_APP_SERVER}/api/user/`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",

@@ -42,7 +42,7 @@ export default function SinglePost() {
     const fetchPost = () => {
         axios({
             method: 'get',
-            url: `/api/post/${postId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/${postId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export default function SinglePost() {
     const fetchPhoto = () => {
         axios({
             method: 'get',
-            url: `/api/post/photo/${postId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/photo/${postId}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",
@@ -89,7 +89,7 @@ export default function SinglePost() {
         let callApi = like ? 
         await axios({
             method: 'put',
-            url: `/api/post/unlike/${isAuthenticated().id}/${postId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/unlike/${isAuthenticated().id}/${postId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export default function SinglePost() {
         :         
         await axios({
             method: 'put',
-            url: `/api/post/like/${isAuthenticated().id}/${postId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/like/${isAuthenticated().id}/${postId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",
@@ -126,7 +126,7 @@ export default function SinglePost() {
     const deletePost = () => {
         axios({
             method: 'delete',
-            url: `/api/post/delete/${isAuthenticated().id}/${postId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/delete/${isAuthenticated().id}/${postId}`,
             headers: {
                 Accept: "*/*",
                 "Content-Type": "application/json",

@@ -28,7 +28,7 @@ export default function PostCard({ post }) {
     const fetchPhoto = id => {
         axios({
             method: 'get',
-            url: `/api/post/photo/${id}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/photo/${id}`,
             responseType: 'arraybuffer',
             headers: {
                 Accept: "*/*",

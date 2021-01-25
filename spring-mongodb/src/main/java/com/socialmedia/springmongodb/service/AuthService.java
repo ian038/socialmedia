@@ -3,13 +3,10 @@ package com.socialmedia.springmongodb.service;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
-import java.util.Locale;
-import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.MessageSource;
 import com.socialmedia.springmongodb.Auth.JwtProvider;
 import com.socialmedia.springmongodb.dto.AuthResponse;
 import com.socialmedia.springmongodb.dto.ErrorResponse;
@@ -56,9 +53,6 @@ public class AuthService {
 
     @Autowired
     private JavaMailSender mailSender;
-
-    @Autowired
-    private MessageSource messages;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -150,7 +144,7 @@ public class AuthService {
 
     // NON-API
     private SimpleMailMessage constructResetTokenEmail(final String token, final User user) {
-        final String url = "http://localhost:3000/resetpassword/" + user.getId() + "/" + token;
+        final String url = "https://socmediaappfront.web.app/resetpassword/" + user.getId() + "/" + token;
         final SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(user.getEmail());
         email.setSubject("Reset Password");

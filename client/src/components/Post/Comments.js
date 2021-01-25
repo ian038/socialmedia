@@ -15,7 +15,7 @@ export default function Comments({ postId, comments, updateComments }) {
     const addComment = comment => {
         return axios({
             method: 'put',
-            url: `/api/post/comment/${isAuthenticated().id}/${postId}`,
+            url: `${process.env.REACT_APP_SERVER}/api/post/comment/${isAuthenticated().id}/${postId}`,
             headers: {
                 Accept: "*/*",
                 Authorization: `Bearer ${isAuthenticated().token}`
