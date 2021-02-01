@@ -32,14 +32,45 @@ export default function Signup() {
         email: '',
         password: '',
         error: '',
-        success: false
+        success: false,
+        recaptcha: false
     })
-    const { username, email, password, error, success } = values
+    const { username, email, password, error, success, recaptcha } = values
 
     // higher order function to target name and event of form
     const handleChange = name => e => {
         // array syntax to target all input fields
         setValues({ ...values, success: false, [name]: e.target.value })
+    }
+
+    const recaptchaHandler = e => {
+        setValues({ ...values, error: "" })
+        let userDay = e.target.value.toLowerCase()
+        let dayCount
+    
+        if (userDay === "sunday") {
+            dayCount = 0
+        } else if (userDay === "monday") {
+            dayCount = 1
+        } else if (userDay === "tuesday") {
+            dayCount = 2
+        } else if (userDay === "wednesday") {
+            dayCount = 3
+        } else if (userDay === "thursday") {
+            dayCount = 4
+        } else if (userDay === "friday") {
+            dayCount = 5
+        } else if (userDay === "saturday") {
+            dayCount = 6
+        }
+    
+        if (dayCount === new Date().getDay()) {
+            setValues({ ...values, recaptcha: true })
+            return true
+        } else {
+            setValues({ ...values, recaptcha: false })
+            return false
+        }
     }
 
     const handleSubmit = e => {
@@ -98,6 +129,15 @@ export default function Signup() {
             autoComplete="current-password"
             onChange={handleChange("password")}
             value={password}
+            />
+            <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            label={recaptcha ? "You got it!" : "What day is today?"}
+            type="text"
+            onChange={recaptchaHandler}
             />
             <Button
             type="submit"

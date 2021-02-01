@@ -42,24 +42,59 @@ export default function SignIn() {
       password: '',
       error: '',
       loading: false,
-      redirectToReferer: true
+      redirectToReferer: false,
+      recaptcha: false
   })
-  const { username, password, error, loading, redirectToReferer } = values
+  const { username, password, error, loading, redirectToReferer, recaptcha } = values
 
   const handleChange = name => e => {
       setValues({ ...values, error: false, [name]: e.target.value })
   }
 
+  const recaptchaHandler = e => {
+    setValues({ ...values, error: "" })
+    let userDay = e.target.value.toLowerCase()
+    let dayCount
+
+    if (userDay === "sunday") {
+        dayCount = 0
+    } else if (userDay === "monday") {
+        dayCount = 1
+    } else if (userDay === "tuesday") {
+        dayCount = 2
+    } else if (userDay === "wednesday") {
+        dayCount = 3
+    } else if (userDay === "thursday") {
+        dayCount = 4
+    } else if (userDay === "friday") {
+        dayCount = 5
+    } else if (userDay === "saturday") {
+        dayCount = 6
+    }
+
+    if (dayCount === new Date().getDay()) {
+        setValues({ ...values, recaptcha: true })
+        return true
+    } else {
+        setValues({ ...values, recaptcha: false })
+        return false
+    }
+}
+
   const handleSubmit = e => {
       e.preventDefault()
       setValues({ ...values, error: false, loading: true })
-      signin({ username, password }).then(res => {
+      if(recaptcha === true) {
+        signin({ username, password }).then(res => {
           authenticate(res, () => {
             setValues({ ...values, redirectToReferer: true })
            })
-      }).catch(error => {
-        setValues({ ...values, error: error.response.data.details, loading: false })
-      })
+        }).catch(error => {
+          setValues({ ...values, error: error.response.data.details, loading: false })
+        })
+      } else {
+        setValues({ ...values, loading: false, error: 'Please enter the correct day.' })
+      }
   }
 
   const showError = () => (
@@ -103,6 +138,15 @@ export default function SignIn() {
           autoComplete="current-password"
           onChange={handleChange("password")}
           value={password}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          label={recaptcha ? "You got it!" : "What day is today?"}
+          type="text"
+          onChange={recaptchaHandler}
         />
         <Button
           type="submit"
