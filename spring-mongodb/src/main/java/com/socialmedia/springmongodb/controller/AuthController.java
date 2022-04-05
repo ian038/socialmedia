@@ -19,7 +19,7 @@ import com.socialmedia.springmongodb.dto.SigninRequest;
 import com.socialmedia.springmongodb.dto.SignupRequest;
 import com.socialmedia.springmongodb.service.AuthService;
 
-@CrossOrigin(origins = "http://localhost:3000/", maxAge = 3600)
+@CrossOrigin(origins = {"http://localhost:3000/", "https://socmediaappfront.web.app/"}, maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

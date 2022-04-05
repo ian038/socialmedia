@@ -28,7 +28,7 @@ import com.socialmedia.springmongodb.model.Comment;
 import com.socialmedia.springmongodb.model.Post;
 import com.socialmedia.springmongodb.service.PostService;
 
-@CrossOrigin(origins = "http://localhost:3000/", maxAge = 3600)
+@CrossOrigin(origins = {"http://localhost:3000/", "https://socmediaappfront.web.app/"}, maxAge = 3600)
 @RestController
 @RequestMapping("/api/post")
 public class PostController {
