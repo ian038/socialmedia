@@ -15,34 +15,34 @@ export const signup = user => {
 
 export const signin = user => {
     return axios({
-            method: 'post',
-            url:`${process.env.REACT_APP_SERVER}/api/auth/signin`,
-            headers: {
-                Accept: "*/*",
-                "Content-Type": "application/json"
-            },
-            data: JSON.stringify(user)
-        })
+        method: 'post',
+        url: `${process.env.REACT_APP_SERVER}/api/auth/signin`,
+        headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json"
+        },
+        data: JSON.stringify(user)
+    })
 }
 
 export const signout = next => {
-    if(typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
         localStorage.removeItem('jwt')
         localStorage.removeItem('userid')
         localStorage.removeItem('username')
         localStorage.removeItem('useremail')
         next()
         return axios.get(`${process.env.REACT_APP_SERVER}/api/auth/signout`)
-        .then(res => {
-           return res.data
-        })
-        .catch(error => console.log(error))
+            .then(res => {
+                return res.data
+            })
+            .catch(error => console.log(error))
     }
 }
 
 
 export const authenticate = (res, next) => {
-    if(typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
         localStorage.setItem('jwt', JSON.stringify(res.data.authenticationToken))
         localStorage.setItem('userid', JSON.stringify(res.data.userId))
         localStorage.setItem('username', JSON.stringify(res.data.username))
@@ -52,13 +52,13 @@ export const authenticate = (res, next) => {
 }
 
 export const isAuthenticated = () => {
-    if(typeof window === 'undefined') {
+    if (typeof window === 'undefined') {
         return false
     }
-    if(localStorage.getItem('jwt')) {
+    if (localStorage.getItem('jwt')) {
         const decoded = jwt_decode(localStorage.getItem('jwt'))
         const expirationTime = (decoded.exp * 1000) - 60000
-        if(Date.now() >= expirationTime) {
+        if (Date.now() >= expirationTime) {
             localStorage.clear()
         }
         const user = {}
@@ -81,7 +81,7 @@ export const forgotPassword = email => {
             "Content-Type": "application/json",
         },
         data: email
-    }) 
+    })
 }
 
 export const resetPassword = resetInfo => {
@@ -93,5 +93,5 @@ export const resetPassword = resetInfo => {
             "Content-Type": "application/json",
         },
         data: resetInfo.password
-    }) 
+    })
 }
